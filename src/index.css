@@ -9,9 +9,11 @@ body {
 }
 
 .game {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 470px;
+    min-width: 470px;
 }
 
 .game-info {
@@ -19,25 +21,40 @@ body {
 }
 
 .cell {
-  background: #fff;
-  border: 1px solid #414c69;
-  float: left;
-  line-height: 34px;
-  height: 34px;
-  text-align: center;
-  width: 34px;
-  cursor: pointer;
-}
+    background: #7b7b7b;
+    border: 1px solid #fff;
+    float: left;
+    line-height: 45px;
+    height: 45px;
+    text-align: center;
+    width: 45px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 600;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .selected {
+    background: #fc543c;
+  }
+
+    .lake {
+        background: dodgerblue;
+    }
 
 .cell:focus {
   outline: none;
 }
 
-.hidden {
-  background: #7e7b92;
-}
-
 .is-flag,
 .is-mine {
   color: #fc543c;
+}
+
+Col {
+  background-color: lightblue;
 }
