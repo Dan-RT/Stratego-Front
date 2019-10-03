@@ -16,6 +16,12 @@ body {
     min-width: 470px;
 }
 
+.PieceImage {
+    max-width: 3vw;
+    border: black 2px solid;
+    border-radius: 7px;
+}
+
 .game-info {
   min-height: 50px;
 }

@@ -1,24 +1,31 @@
 import React from 'react';
+import getCorrectImage from '../image/Images';
 
 export default class Cell extends React.Component {
 
     constructor () {
         super();
-        this.getValue = this.getValue.bind(this);
+        this.getImage = this.getImage.bind(this);
         this.state = {
             isLake : false
         };
     }
 
-    getValue(){
-        // Todo to change
-        if (this.props.value === "NONE") {
-            return "";
-        } else if (this.props.value === -2 || this.props.value === "") {
-            return "";
+    getImage(value) {
+        let color = "";
+        if (value.team === 1) {
+            color = "_R";
+        } else if (value.team === 2) {
+            color = "_B";
         } else {
-            return this.props.value;
+            console.log("ERROR ON Cell.getImage");
+            return "";
         }
+
+        let nameImage = value.type + color;
+
+        return <img src={getCorrectImage(nameImage)} alt={nameImage} className="PieceImage"/>;
+
     }
 
     render(){
@@ -26,7 +33,7 @@ export default class Cell extends React.Component {
 
         return (
             <div ref="cell" onClick={this.props.onClick} className={className}>
-                {this.getValue()}
+                {this.getImage(this.props.value)}
             </div>
         );
     }

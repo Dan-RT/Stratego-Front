@@ -2,7 +2,7 @@
 
 const api = {
     get(path) {
-        console.log("GET request on path: " + path);
+        console.log("GET request to " + path);
         return fetch(path).then((resp) => {
             if (resp.status === 200) {
                 return resp.json();
@@ -13,6 +13,8 @@ const api = {
         });
     },
     put(path, body) {
+        console.log("PUT request to " + path);
+        //console.log(JSON.stringify(body));
         return fetch(path, {
             method: 'PUT',
             body: JSON.stringify(body),
@@ -23,14 +25,23 @@ const api = {
         });
     },
     post(path, body){
+        console.log("POST request to " + path);
+        //console.log(body);
         return fetch(path, {
             method: 'POST',
-            body : JSON.stringify(body),
+            body : body,
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        })
+        }).then((resp) => {
+            if (resp.status === 200) {
+                return resp.json();
+            }
+            throw(resp);
+        }).catch((err) => {
+            console.error('Error in ' + path + ' request. ' + err);
+        });
     }
 };
 

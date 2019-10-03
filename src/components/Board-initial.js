@@ -81,7 +81,7 @@ export default class Board_initial extends React.Component {
         }
         data = this.plantMines(data, height, width, mines);
         data = this.getNeighbours(data, height, width);
-        console.log(data);
+        //console.log(data);
         return data;
     }
 
