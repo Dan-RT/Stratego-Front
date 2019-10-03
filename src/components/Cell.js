@@ -6,13 +6,12 @@ export default class Cell extends React.Component {
     constructor () {
         super();
         this.getImage = this.getImage.bind(this);
-        this.state = {
-            isLake : false
-        };
     }
 
     getImage(value) {
+
         let color = "";
+
         if (value.team === 1) {
             color = "_R";
         } else if (value.team === 2) {

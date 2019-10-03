@@ -5,7 +5,7 @@ export default function displayBoard (board) {
         let row = "";
         for (let j = 0; j < 10; j++) {
             row = row.concat(" | " + j + " ");
-            row = row.concat(board[i][j].type.substring(0, 3));
+            row = row.concat(board[j][i].type.substring(0, 3));
         }
         console.log(i + " " + row);
     }

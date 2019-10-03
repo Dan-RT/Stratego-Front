@@ -24,7 +24,6 @@ export default class Board extends React.Component {
     }
 
     initGame() {
-        ////console.log("initGame");
         api.get("http://localhost:8080/game/initialize").then(data => {
             displayBoard(data.board);
             this.setState({
@@ -51,14 +50,14 @@ export default class Board extends React.Component {
                 <div>
                     {Object.keys(board).map(keyOuter => {
                         return Object.keys(board[keyOuter]).map(keyInner => {
-                            let item = board[keyOuter][keyInner];
+                            let item = board[keyInner][keyOuter];
                             return (
-                                <div key={`${keyOuter}-${keyInner}`}>
+                                <div key={`${keyInner}-${keyOuter}`}>
                                     <Cell
-                                        isSelected={(this.isSelected(keyOuter, keyInner))}
-                                        value={item.type}
+                                        isSelected={(this.isSelected(item.coordinate.x, item.coordinate.y))}
+                                        value={item}
                                         team={item.team}
-                                        onClick={() => this.handleCellSelection(keyOuter, keyInner)}
+                                        onClick={() => this.handleCellSelection(item.coordinate.x, item.coordinate.y)}
                                         isLake={(item.type === "LAKE")}
                                     />
                                 </div>
@@ -114,10 +113,9 @@ export default class Board extends React.Component {
                     let board = this.state.board;
                     let pieceToMove = this.state.board[this.state.selected.x][this.state.selected.y];
                     console.log("pieceToMove");
-                    pieceToMove
+
                     let action = this.state.board[item_x][item_y].coordinate;
                     console.log("Action");
-
 
                     let request = JSON.stringify({board, pieceToMove, action});
                     api.post("http://localhost:8080/turn", request).then(data => {
