@@ -1,3 +1,5 @@
+import React from 'react';
+
 import SPY_B from "../image//BLEU/1_bleu.jpg";
 import SCOUT_B from "../image//BLEU/2_bleu.jpg";
 import MINER_B from "../image//BLEU/3_bleu.jpg";
@@ -25,7 +27,7 @@ import BOMB_R from "../image//ROUGE/bombe_rouge.jpg";
 import FLAG_R from "../image//ROUGE/drapeau_rouge.jpg";
 
 
-function getCorrectImage(item) {
+export function getCorrectImage(item) {
     switch (item) {
         case "SPY_R":
             return SPY_R;
@@ -82,4 +84,21 @@ function getCorrectImage(item) {
     }
 }
 
-export default getCorrectImage;
+export function getImage(value) {
+
+    let color = "";
+
+    if (value.team === 1) {
+        color = "_R";
+    } else if (value.team === 2) {
+        color = "_B";
+    } else {
+        console.log("ERROR ON Cell.getImage");
+        return "";
+    }
+
+    let nameImage = value.type + color;
+
+    return <img src={getCorrectImage(nameImage)} alt={nameImage} className="PieceImage"/>;
+
+}

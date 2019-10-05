@@ -15,7 +15,6 @@ export default class Board extends React.Component {
                 y:-1
             }
         };
-        console.log("constructor")
     }
 
     renderBoard(board) {
@@ -68,7 +67,7 @@ export default class Board extends React.Component {
 
             
 
-            if (this.isSelected(current.x, current.y)) {
+            if (this.isSelected(current.coordinate.x, current.coordinate.y)) {
                 // if we click on the same piece, we unselect it
                 this.setState({
                     selected : {
@@ -76,6 +75,7 @@ export default class Board extends React.Component {
                         y:-1
                     }
                 });
+                return;
             } else if (this.isPiece(previous))  {
                     // if previous is empty
                     

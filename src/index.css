@@ -9,9 +9,6 @@ body {
 }
 
 .game {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
     max-width: 470px;
     min-width: 470px;
 }
@@ -24,6 +21,12 @@ body {
 
 .game-info {
   min-height: 50px;
+}
+
+.side {
+    margin-top: 7.45vh;
+    max-width: 180px;
+    min-width: 180px;
 }
 
 .cell {

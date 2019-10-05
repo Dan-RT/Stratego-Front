@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Board from './components/Board';
+import Side from './components/Side';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Grid from '@material-ui/core/Grid';
@@ -31,7 +32,8 @@ class Game extends React.Component {
         api.get("http://localhost:8080/game").then(data => {
             displayBoard(data.board);
             this.setState({
-                board : data.board
+                board : data.board,
+                pieces : data.pieces1
             })
         });
     }
@@ -40,7 +42,8 @@ class Game extends React.Component {
         return api.post(path, request).then(data => {
             displayBoard(data.board);
             this.setState({
-                board : data.board
+                board : data.board,
+                pieces : data.pieces1
             });
         });
     }
@@ -49,7 +52,8 @@ class Game extends React.Component {
         api.get("http://localhost:8080/game/initialize").then(data => {
             displayBoard(data.board);
             this.setState({
-                board : data.board
+                board : data.board,
+                pieces : data.pieces1
             })
         });
     }
@@ -57,17 +61,23 @@ class Game extends React.Component {
     render() {
         return (
 
-            <Grid container  spacing={2}>
-                <Grid item xs={12}>
-
-                </Grid>
-                <Grid item xs={12}>
-                    <div className="game">
-                        <div className="game-info">
-                            <button onClick={this.handleGameStart}>Start</button>
-                        </div>
-                        { this.state.started && <Board board={this.state.board} queryToBackend={this.queryToBackend}/>}
+            <Grid container spacing={2} direction="row" justify="center">
+                {<Grid item xs={3}>
+                    <div className="side">
+                        { this.state.started && <Side pieces={this.state.pieces}/> }
                     </div>
+                </Grid>}
+                <Grid item xs={5}>
+                    <Grid container className="game" direction="column">
+                        <Grid item className="game-info">
+                            <button onClick={this.handleGameStart}>Start</button>
+                        </Grid>
+                        { this.state.started &&
+                            <Grid item >
+                                <Board board={this.state.board} queryToBackend={this.queryToBackend}/>
+                            </Grid>
+                        }
+                    </Grid>
                 </Grid>
             </Grid>
 
