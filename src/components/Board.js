@@ -1,17 +1,11 @@
 import React from 'react';
 import Cell from './Cell';
-import api from "../utils/api";
-import displayBoard from "../utils/tools";
-
 
 export default class Board extends React.Component {
 
     constructor () {
         super();
-        //this.initGame = this.initGame.bind(this);
-        //this.pullGame = this.pullGame.bind(this);
         this.renderBoard = this.renderBoard.bind(this);
-        //this.manageData = this.manageData.bind(this);
         this.isSelected = this.isSelected.bind(this);
         this.isOpponent = this.isOpponent.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
@@ -23,25 +17,6 @@ export default class Board extends React.Component {
         };
         console.log("constructor")
     }
-
-    /*initGame() {
-        api.get("http://localhost:8080/game/initialize").then(data => {
-            displayBoard(data.board);
-            this.setState({
-                board : data.board
-            })
-        });
-    }
-
-    pullGame() {
-        api.get("http://localhost:8080/game").then(data => {
-            displayBoard(data.board);
-            this.setState({
-                board : data.board
-            })
-        });
-    }
-    */
 
     renderBoard(board) {
         if (board) {
@@ -172,8 +147,6 @@ export default class Board extends React.Component {
         });
     }
 
-
-
     isLake(item_x, item_y) {
         if (item_x === -1 || item_y === -1) {
             return false;
@@ -183,7 +156,6 @@ export default class Board extends React.Component {
 
     isEmpty(item) {
         if (item.x === -1 || item.y === -1) {
-            //console.log("-1");
             return false;
         }
         console.log("isEmpty");
@@ -207,22 +179,6 @@ export default class Board extends React.Component {
     isOpponent(currentPiece, targetedPiece) {
         return (currentPiece.team !== targetedPiece.team)
     }
-
-    /*manageData() {
-        if (!this.props.started) {
-            this.initGame()
-        } else {
-            this.pullGame();
-        }
-    }
-
-    componentWillMount() {
-        this.manageData();
-    }
-
-    componentWillReceiveProps() {
-        this.manageData();
-    }*/
 
     render() {
         return (

@@ -54,10 +54,6 @@ class Game extends React.Component {
         });
     }
 
-    componentWillMount() {
-        //this.initGame();
-    }
-
     render() {
         return (
 
