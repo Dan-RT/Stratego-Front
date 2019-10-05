@@ -19,7 +19,6 @@ class Game extends React.Component {
     }
 
     handleGameStart() {
-        //console.log("handleGameStart");
         this.setState({
             started : true
         });

@@ -13,14 +13,15 @@ export default class Board extends React.Component {
         this.renderBoard = this.renderBoard.bind(this);
         this.manageData = this.manageData.bind(this);
         this.isSelected = this.isSelected.bind(this);
+        this.isOpponent = this.isOpponent.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
-
         this.state = {
             selected : {
                 x:-1,
                 y:-1
             }
         };
+        console.log("constructor")
     }
 
     initGame() {
@@ -43,8 +44,6 @@ export default class Board extends React.Component {
 
     renderBoard(board) {
         if (board) {
-            ////console.log("renderBoard")
-            ////console.log("board", board);
 
             return (
                 <div>
@@ -70,99 +69,116 @@ export default class Board extends React.Component {
     }
 
     handleCellSelection(item_x, item_y) {
-        console.log("Selected : x: " + this.state.selected.x + " and y: " + this.state.selected.y);
+
+        let current = this.state.board[item_x][item_y];
+        console.log("Current:");
+        console.log(current);
+
+        if (this.isLake(item_x, item_y)) {
+            return;
+        }
+
+        let previous = 0;
+
+        
+        console.log("Selected x: " + this.state.selected.x + " y: " + this.state.selected.y);
+
         if (this.state.selected.x >= 0 && this.state.selected.y >= 0) {
-            console.log(this.state.board[this.state.selected.x][this.state.selected.y]);
-        }
-        console.log("To select: x: " + item_x + " and y: " + item_y);
-        if (item_x >= 0 && item_y >= 0) {
-            console.log(this.state.board[item_x][item_y]);
-        }
+            // if we have a selected piece
 
-        if (this.isSelected(item_x, item_y)) {
-            this.setState({
-                selected : {
-                    x:-1,
-                    y:-1
+            previous = this.state.board[this.state.selected.x][this.state.selected.y];
+            console.log("previous:");
+            console.log(previous);
+
+            
+
+            if (this.isSelected(current.x, current.y)) {
+                // if we click on the same piece, we unselect it
+                this.setState({
+                    selected : {
+                        x:-1,
+                        y:-1
+                    }
+                });
+            } else if (this.isPiece(previous))  {
+                    // if previous is empty
+
+                    
+                    if (this.isEmpty(current)) {
+                        // if current is a piece
+
+                        let board = this.state.board;
+                        let pieceToMove = this.state.board[this.state.selected.x][this.state.selected.y];
+                        console.log("pieceToMove");
+
+                        let action = this.state.board[item_x][item_y].coordinate;
+                        console.log("Action");
+
+                        let request = JSON.stringify({board, pieceToMove, action});
+                        api.post("http://localhost:8080/turn", request).then(data => {
+                            if (data.authorized) {
+                                displayBoard(data.board);
+                                this.setState({
+                                    board : data.board,
+                                    selected : {
+                                        x:-1,
+                                        y:-1
+                                    }
+                                });
+                            } else {
+                                this.setState({
+                                    selected : {
+                                        x:-1,
+                                        y:-1
+                                    }
+                                });
+                                alert("Bro you can't play that.");
+                            }
+                        }).then(() => {
+                            //console.log(this.state.board[6][9]);
+                        });
+
+
+                        return;
+                    }
+
+                    if (this.isOpponent(previous, current) && this.isOpponent(previous, current)) {
+                        alert("ATTAAAAAACK");
+
+                        this.setState({
+                            selected : {
+                                x:-1,
+                                y:-1
+                            }
+                        });
+
+                        return;
+                    }
+
                 }
-            });
-        } else {
-
-            ////console.log(this.state.board[item_x][item_y].type);
-
-            // Si on selectionne un endroit vide ca marche pas apres avoir selectionné une piece:
-                // demander autorisation
-                // changer de place la piece
-
-            let empty = this.isEmpty(item_x, item_y);
-            console.log("empty current", empty);
-
-            let piece = this.isPiece(this.state.selected.x, this.state.selected.y);
-            console.log("piece before", piece);
-
-            if (empty) {
-                if (piece)  {
-                    //si le precedent est une piece et le current vide
-                    console.log("GOOOOOOOO");
-
-                    /*this.state.board[item_x][item_y] = this.state.board[this.state.selected.x][this.state.selected.y];
-                    this.state.board[item_x][item_y].coordinate.x = item_x;
-                    this.state.board[item_x][item_y].coordinate.y = item_y;
-                    console.log(this.state.board[item_x][item_y]);*/
-
-                    let board = this.state.board;
-                    let pieceToMove = this.state.board[this.state.selected.x][this.state.selected.y];
-                    console.log("pieceToMove");
-
-                    let action = this.state.board[item_x][item_y].coordinate;
-                    console.log("Action");
-
-                    let request = JSON.stringify({board, pieceToMove, action});
-                    api.post("http://localhost:8080/turn", request).then(data => {
-                        if (data.authorized) {
-                            displayBoard(data.board);
-                            this.setState({
-                                board : data.board,
-                                selected : {
-                                    x:-1,
-                                    y:-1
-                                }
-                            });
-                        } else {
-                            this.setState({
-                                selected : {
-                                    x:-1,
-                                    y:-1
-                                }
-                            });
-                            alert("Bro you can't play that.");
-                        }
-                    }).then(() => {
-                        //console.log(this.state.board[6][9]);
-                    });
-
-                    console.log("Board");
-                    //displayBoard(this.state.board);
-
-                    return;
-                }
+                console.log("Board");
+                //displayBoard(this.state.board);
             }
 
-            if (this.isLake(item_x, item_y) || this.isEmpty(item_x, item_y)) {
-                return;
-            }
+        if (this.isPiece(current)) {
+            // if current is a piece, select current
 
+            console.log(current);
             this.setState({
                 selected : {
-                    x:item_x,
-                    y:item_y
+                    x: current.coordinate.x,
+                    y: current.coordinate.y
                 }
             });
-
-
-            console.log("Board");
-            //displayBoard(this.state.board);
+            return;
         }
+
+        this.setState({
+            selected: {
+                x: -1,
+                y: -1
+            }
+        });
     }
 
     isLake(item_x, item_y) {
@@ -172,49 +188,46 @@ export default class Board extends React.Component {
         return (this.state.board[item_x][item_y].type === "LAKE");
     }
 
-    isEmpty(item_x, item_y) {
-        if (item_x === -1 || item_y === -1) {
+    isEmpty(item) {
+        if (item.x === -1 || item.y === -1) {
             //console.log("-1");
             return false;
         }
         console.log("isEmpty");
-        console.log(this.state.board[item_x][item_y].type);
-        return (this.state.board[item_x][item_y].type === "NONE");
+        console.log(item.type);
+        return (item.type === "NONE");
     }
 
-    isPiece(item_x, item_y) {
-        ////console.log("test : x: " + item_x + " and y: " + item_y);
-        ////console.log(this.state.board);
-        if (item_x === -1 || item_y === -1) {
-            //console.log("-1");
+    isPiece(item) {
+        if (item.x === -1 || item.y === -1) {
             return false;
         }
         console.log("isPiece");
-        console.log(this.state.board[item_x][item_y].type);
-        return (this.state.board[item_x][item_y].type !== "NONE" && !this.state.board[item_x][item_y].type !== "LAKE");
+        console.log(item.type);
+        return (item.type !== "NONE" && !item.type !== "LAKE");
     }
 
     isSelected(item_x, item_y) {
         return (item_x === this.state.selected.x && item_y === this.state.selected.y);
     }
 
+    isOpponent(currentPiece, targetedPiece) {
+        return (currentPiece.team !== targetedPiece.team)
+    }
+
     manageData() {
         if (!this.props.started) {
-            this.setState({
-                board: this.initGame()
-            })
+            this.initGame()
         } else {
             this.pullGame();
         }
     }
 
     componentWillMount() {
-        ////console.log("componentWillMount");
         this.manageData();
     }
 
     componentWillReceiveProps() {
-        ////console.log("componentWillReceiveProps");
         this.manageData();
     }
 
