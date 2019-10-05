@@ -8,10 +8,10 @@ export default class Board extends React.Component {
 
     constructor () {
         super();
-        this.initGame = this.initGame.bind(this);
-        this.pullGame = this.pullGame.bind(this);
+        //this.initGame = this.initGame.bind(this);
+        //this.pullGame = this.pullGame.bind(this);
         this.renderBoard = this.renderBoard.bind(this);
-        this.manageData = this.manageData.bind(this);
+        //this.manageData = this.manageData.bind(this);
         this.isSelected = this.isSelected.bind(this);
         this.isOpponent = this.isOpponent.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
@@ -24,7 +24,7 @@ export default class Board extends React.Component {
         console.log("constructor")
     }
 
-    initGame() {
+    /*initGame() {
         api.get("http://localhost:8080/game/initialize").then(data => {
             displayBoard(data.board);
             this.setState({
@@ -41,6 +41,7 @@ export default class Board extends React.Component {
             })
         });
     }
+    */
 
     renderBoard(board) {
         if (board) {
@@ -70,7 +71,7 @@ export default class Board extends React.Component {
 
     handleCellSelection(item_x, item_y) {
 
-        let current = this.state.board[item_x][item_y];
+        let current = this.props.board[item_x][item_y];
         console.log("Current:");
         console.log(current);
 
@@ -86,7 +87,7 @@ export default class Board extends React.Component {
         if (this.state.selected.x >= 0 && this.state.selected.y >= 0) {
             // if we have a selected piece
 
-            previous = this.state.board[this.state.selected.x][this.state.selected.y];
+            previous = this.props.board[this.state.selected.x][this.state.selected.y];
             console.log("previous:");
             console.log(previous);
 
@@ -102,42 +103,26 @@ export default class Board extends React.Component {
                 });
             } else if (this.isPiece(previous))  {
                     // if previous is empty
-
                     
                     if (this.isEmpty(current)) {
                         // if current is a piece
 
-                        let board = this.state.board;
-                        let pieceToMove = this.state.board[this.state.selected.x][this.state.selected.y];
+                        let board = this.props.board;
+                        let pieceToMove = this.props.board[this.state.selected.x][this.state.selected.y];
                         console.log("pieceToMove");
 
-                        let action = this.state.board[item_x][item_y].coordinate;
+                        let action = this.props.board[item_x][item_y].coordinate;
                         console.log("Action");
 
                         let request = JSON.stringify({board, pieceToMove, action});
-                        api.post("http://localhost:8080/turn", request).then(data => {
-                            if (data.authorized) {
-                                displayBoard(data.board);
-                                this.setState({
-                                    board : data.board,
-                                    selected : {
-                                        x:-1,
-                                        y:-1
-                                    }
-                                });
-                            } else {
-                                this.setState({
-                                    selected : {
-                                        x:-1,
-                                        y:-1
-                                    }
-                                });
-                                alert("Bro you can't play that.");
-                            }
-                        }).then(() => {
-                            //console.log(this.state.board[6][9]);
+                        this.props.queryToBackend("http://localhost:8080/turn", request).then(() => {
+                            this.setState({
+                                selected : {
+                                    x:-1,
+                                    y:-1
+                                }
+                            });
                         });
-
 
                         return;
                     }
@@ -145,19 +130,25 @@ export default class Board extends React.Component {
                     if (this.isOpponent(previous, current) && this.isOpponent(previous, current)) {
                         alert("ATTAAAAAACK");
 
-                        this.setState({
-                            selected : {
-                                x:-1,
-                                y:-1
-                            }
+                        let board = this.props.board;
+                        let pieceAttacking = previous;
+                        let pieceAttacked = current;
+
+                        let request = JSON.stringify({board, pieceAttacking, pieceAttacked});
+
+                        this.props.queryToBackend("http://localhost:8080/attack", request).then(() => {
+                            this.setState({
+                                selected : {
+                                    x:-1,
+                                    y:-1
+                                }
+                            });
                         });
 
                         return;
                     }
 
                 }
-                console.log("Board");
-                //displayBoard(this.state.board);
             }
 
         if (this.isPiece(current)) {
@@ -181,11 +172,13 @@ export default class Board extends React.Component {
         });
     }
 
+
+
     isLake(item_x, item_y) {
         if (item_x === -1 || item_y === -1) {
             return false;
         }
-        return (this.state.board[item_x][item_y].type === "LAKE");
+        return (this.props.board[item_x][item_y].type === "LAKE");
     }
 
     isEmpty(item) {
@@ -215,7 +208,7 @@ export default class Board extends React.Component {
         return (currentPiece.team !== targetedPiece.team)
     }
 
-    manageData() {
+    /*manageData() {
         if (!this.props.started) {
             this.initGame()
         } else {
@@ -229,15 +222,13 @@ export default class Board extends React.Component {
 
     componentWillReceiveProps() {
         this.manageData();
-    }
+    }*/
 
     render() {
-        ////console.log(this.props);
-        ////console.log("board.render()");
         return (
             <div className="board">
                 {
-                    this.renderBoard(this.state.board)
+                    this.renderBoard(this.props.board)
                 }
             </div>
         );
