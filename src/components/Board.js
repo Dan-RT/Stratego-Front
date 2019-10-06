@@ -8,7 +8,8 @@ export default class Board extends React.Component {
         this.renderBoard = this.renderBoard.bind(this);
         this.isSelected = this.isSelected.bind(this);
         this.isOpponent = this.isOpponent.bind(this);
-        this.handleCellSelection = this.handleCellSelection.bind(this);
+        this.handleCellSelectionStarted = this.handleCellSelectionStarted.bind(this);
+        this.handleCellSelectionSetup = this.handleCellSelectionSetup.bind(this);
         this.state = {
             selected : {
                 x:-1,
@@ -31,7 +32,15 @@ export default class Board extends React.Component {
                                         isSelected={(this.isSelected(item.coordinate.x, item.coordinate.y))}
                                         value={item}
                                         team={item.team}
-                                        onClick={() => this.handleCellSelection(item.coordinate.x, item.coordinate.y)}
+                                        onClick={
+                                            () => {
+                                                if(this.props.started && !this.props.setup) {
+                                                    this.handleCellSelectionStarted(item.coordinate.x, item.coordinate.y)
+                                                } else if (!this.props.started && this.props.setup) {
+                                                    this.handleCellSelectionSetup(item.coordinate.x, item.coordinate.y)
+                                                }
+                                            }
+                                        }
                                         isLake={(item.type === "LAKE")}
                                     />
                                 </div>
@@ -43,7 +52,11 @@ export default class Board extends React.Component {
 
     }
 
-    handleCellSelection(item_x, item_y) {
+    handleCellSelectionSetup() {
+        console.log("handleCellSelectionSetup");
+    }
+
+    handleCellSelectionStarted(item_x, item_y) {
 
         let current = this.props.board[item_x][item_y];
         console.log("Current:");
@@ -103,7 +116,6 @@ export default class Board extends React.Component {
                     }
 
                     if (this.isOpponent(previous, current) && this.isOpponent(previous, current)) {
-                        alert("ATTAAAAAACK");
 
                         let board = this.props.board;
                         let pieceAttacking = previous;
