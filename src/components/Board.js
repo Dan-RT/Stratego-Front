@@ -52,8 +52,66 @@ export default class Board extends React.Component {
 
     }
 
-    handleCellSelectionSetup() {
+    handleCellSelectionSetup(item_x, item_y) {
+
+        console.log(item_x);
+        console.log(item_y);
+
+        if (this.isSelected(item_x, item_y)) {
+            this.setState({
+                selected : {
+                    x : -1,
+                    y : -1
+                }
+            });
+            this.props.handleCellSelection(this.props.board[item_x][item_y], true);
+        } else {
+            this.setState({
+                selected : {
+                    x : item_x,
+                    y : item_y
+                }
+            });
+            this.props.handleCellSelection(this.props.board[item_x][item_y], false);
+        }
+
+
+
+        /* let current = this.props.board[item_x][item_y];
+        let previous = 0;
+        console.log("Selected x: " + this.state.selected.x + " y: " + this.state.selected.y);
+
+        if (this.state.selected.x >= 0 && this.state.selected.y >= 0) {
+            previous = this.props.board[this.state.selected.x][this.state.selected.y];
+
+            if (this.isSelected(current.coordinate.item_x, current.coordinate.item_y)) {
+                this.setState({
+                    selected : {
+                        x:-1,
+                        y:-1
+                    }
+                });
+                return;
+            }
+
+            if (this.isEmpty(current)) {
+                //if (this.props.tileSelected.)
+            }
+
+        }
+
         console.log("handleCellSelectionSetup");
+
+        if (this.isEmpty(current)) {
+            //if (this.props.tileSelected.)
+        } else {
+            this.setState({
+                selected: {
+                    x:item_x,
+                    y:item_y
+                }
+            })
+        } */
     }
 
     handleCellSelectionStarted(item_x, item_y) {
@@ -68,17 +126,12 @@ export default class Board extends React.Component {
 
         let previous = 0;
 
-        
-        console.log("Selected x: " + this.state.selected.x + " y: " + this.state.selected.y);
-
         if (this.state.selected.x >= 0 && this.state.selected.y >= 0) {
             // if we have a selected piece
 
             previous = this.props.board[this.state.selected.x][this.state.selected.y];
             console.log("previous:");
             console.log(previous);
-
-            
 
             if (this.isSelected(current.coordinate.x, current.coordinate.y)) {
                 // if we click on the same piece, we unselect it
@@ -191,6 +244,7 @@ export default class Board extends React.Component {
     isOpponent(currentPiece, targetedPiece) {
         return (currentPiece.team !== targetedPiece.team)
     }
+
 
     render() {
         return (

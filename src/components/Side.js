@@ -9,22 +9,33 @@ export default class Side extends React.Component {
         this.isSelected = this.isSelected.bind(this);
         this.handlePieceSelection = this.handlePieceSelection.bind(this);
         this.state = {
-            selected : -1
+            selected : {
+                value : -1,
+                piece : 0
+            }
         };
     }
 
-    handlePieceSelection(key) {
+    handlePieceSelection(key, item) {
         console.log("Key: " + key);
+
         if (this.isSelected(key)) {
             this.setState({
-                selected : -1
+                selected : {
+                    value : -1,
+                    piece : 0
+                }
             });
+            this.props.handleTileSelection(item, key, true);
         } else {
             this.setState({
-                selected : key
+                selected : {
+                    value : key,
+                    piece : item
+                }
             });
+            this.props.handleTileSelection(item, key, false);
         }
-
     }
 
     renderTiles(tiles) {
@@ -38,7 +49,7 @@ export default class Side extends React.Component {
                             <div key={`${key}`}>
                                 <Tile
                                     isSelected={(this.isSelected(key))}
-                                    onClick={() => this.handlePieceSelection(key)}
+                                    onClick={() => this.handlePieceSelection(key, item)}
                                     value={item}
                                 />
                             </div>
@@ -49,7 +60,7 @@ export default class Side extends React.Component {
     }
 
     isSelected(key) {
-        return (key === this.state.selected);
+        return (key === this.state.selected.value);
     }
 
     render() {
