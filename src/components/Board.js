@@ -57,6 +57,8 @@ export default class Board extends React.Component {
         console.log(item_x);
         console.log(item_y);
 
+        console.log(this.state.selected);
+
         if (this.isSelected(item_x, item_y)) {
             this.setState({
                 selected : {
@@ -65,17 +67,51 @@ export default class Board extends React.Component {
                 }
             });
             this.props.handleCellSelection(this.props.board[item_x][item_y], true);
+
         } else {
+
+            let current = this.props.board[item_x][item_y];
+            let previous = {};
+
+            if (this.state.selected.x >= 0 && this.state.selected.y >= 0) {
+                previous = this.props.board[this.state.selected.x][this.state.selected.y];
+
+                if (this.isPiece(previous) && this.isEmpty(current)) {
+                    this.props.movePieceOnBoard(previous, current.coordinate);
+
+                    this.setState({
+                        selected : {
+                            x : -1,
+                            y : -1
+                        }
+                    });
+                    return;
+                }
+
+            }
+
             this.setState({
                 selected : {
                     x : item_x,
                     y : item_y
                 }
             });
+
             this.props.handleCellSelection(this.props.board[item_x][item_y], false);
+
+            setTimeout(
+                function() {
+                    this.setState({
+                        selected : {
+                            x : -1,
+                            y : -1
+                        }
+                    });
+                }.bind(this),
+                2000
+            );
+
         }
-
-
 
         /* let current = this.props.board[item_x][item_y];
         let previous = 0;
@@ -150,10 +186,7 @@ export default class Board extends React.Component {
 
                         let board = this.props.board;
                         let pieceToMove = this.props.board[this.state.selected.x][this.state.selected.y];
-                        console.log("pieceToMove");
-
                         let action = this.props.board[item_x][item_y].coordinate;
-                        console.log("Action");
 
                         let request = JSON.stringify({board, pieceToMove, action});
                         this.props.queryToBackend("http://localhost:8080/turn", request).then(() => {
@@ -244,7 +277,6 @@ export default class Board extends React.Component {
     isOpponent(currentPiece, targetedPiece) {
         return (currentPiece.team !== targetedPiece.team)
     }
-
 
     render() {
         return (

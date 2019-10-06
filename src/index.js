@@ -20,11 +20,13 @@ class Game extends React.Component {
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.handleGameStart = this.handleGameStart.bind(this);
+        this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
         this.state = {
             started : false,
             setup: false,
             tileSelected: {},
-            cellSelected: {}
+            cellSelected: {},
+            resetSelection: false
         };
     }
 
@@ -65,10 +67,7 @@ class Game extends React.Component {
     }
 
     handleTileSelection(item, key, reset) {
-        console.log("item:");
-        console.log(item);
-        console.log("key:");
-        console.log(key);
+
 
         if (reset) {
             this.setState({
@@ -91,6 +90,8 @@ class Game extends React.Component {
     }
 
     handleCellSelection(item, reset) {
+
+
         if (reset) {
             this.setState({
                 cellSelected: {}
@@ -110,17 +111,37 @@ class Game extends React.Component {
         }
     }
 
-    placePiece (tile, cell) {
+    movePieceOnBoard(piece, newCoordinate) {
+        //debugger;
 
-        //if (tile !== undefined && cell !== undefined) {
+        let prevCoordinate = piece.coordinate;
+
+        let newPiece = JSON.parse(JSON.stringify(piece));
+        newPiece.coordinate = newCoordinate;
+        let oldPiece = { type:"NONE", coordinate: prevCoordinate };
+
+        let boardTmp = JSON.parse(JSON.stringify(this.state.board));
+        boardTmp[newCoordinate.x][newCoordinate.y] = newPiece;
+        boardTmp[prevCoordinate.x][prevCoordinate.y] = oldPiece;
+
+        this.setState({
+            board: boardTmp
+        });
+
+        displayBoard(this.state.board);
+    }
+
+    placePiece (tile, cell) {
         if (tile.tile && cell) {
             tile.tile.coordinate = cell.coordinate;
 
             let boardTmp = JSON.parse(JSON.stringify(this.state.board));
-            boardTmp[cell.coordinate.x][cell.coordinate.y] = tile.tile;
-
             let piecesTmp = JSON.parse(JSON.stringify(this.state.pieces));
-            piecesTmp.splice(this.state.tileSelected.key, 1);
+
+            if (boardTmp[cell.coordinate.x][cell.coordinate.y].type === "NONE") {
+                boardTmp[cell.coordinate.x][cell.coordinate.y] = tile.tile;
+                piecesTmp.splice(this.state.tileSelected.key, 1);
+            }
 
             this.setState({
                 board: boardTmp,
@@ -129,6 +150,7 @@ class Game extends React.Component {
                 cellSelected: {}
             });
         }
+        displayBoard(this.state.board);
     }
 
     initGame() {
@@ -181,9 +203,11 @@ class Game extends React.Component {
                                     board={this.state.board}
                                     queryToBackend={this.queryToBackend}
                                     handleCellSelection={this.handleCellSelection}
+                                    movePieceOnBoard={this.movePieceOnBoard}
                                 />
                             </Grid>
                         }
+
                     </Grid>
                 </Grid>
             </Grid>

@@ -11,7 +11,7 @@ export default class Side extends React.Component {
         this.state = {
             selected : {
                 value : -1,
-                piece : 0
+                piece : {}
             }
         };
     }
