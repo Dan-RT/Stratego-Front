@@ -34,7 +34,20 @@ export default class Side extends React.Component {
                     piece : item
                 }
             });
+
             this.props.handleTileSelection(item, key, false);
+
+            setTimeout(
+                function() {
+                    this.setState({
+                        selected : {
+                            value : -1,
+                            piece : 0
+                        }
+                    });
+                }.bind(this),
+                2500
+            );
         }
     }
 
