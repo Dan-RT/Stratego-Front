@@ -108,7 +108,7 @@ export default class Board extends React.Component {
                         }
                     });
                 }.bind(this),
-                2000
+                1500
             );
 
         }

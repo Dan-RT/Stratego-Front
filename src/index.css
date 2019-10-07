@@ -67,3 +67,11 @@ body {
 Col {
   background-color: lightblue;
 }
+
+.player{
+    padding: 3vh;
+}
+
+.playerContent{
+    text-align: center;
+}
