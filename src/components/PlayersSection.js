@@ -16,11 +16,10 @@ export default class PlayersSection extends React.Component {
         this.choosePlayer = this.choosePlayer.bind(this);
         this.state = {
             players : {},
-            redirect: false,
-            players: {
-                current: 0,
-                opponent: 0
-            }
+            player : {},
+            opponent : {},
+            game: {},
+            redirect: false
         };
     }
 
@@ -38,11 +37,24 @@ export default class PlayersSection extends React.Component {
 
     choosePlayer(id) {
         api.get("http://localhost:8080/player/opponent/" + id).then(data => {
+
             this.setState({
-                players: {
-                    current: id,
-                    opponent: data
-                },
+                game:data
+            });
+            for (let i = 0; i < data.players.length; i++) {
+                if (id === data.players[i]._id) {
+                    this.setState({
+                        player:data.players[i]
+                    });
+                } else {
+                    this.setState({
+                        opponent:data.players[i]
+                    });
+                }
+            }
+        }).then(() => {
+            console.log(this.state);
+            this.setState({
                 redirect:true
             })
         });
@@ -56,7 +68,11 @@ export default class PlayersSection extends React.Component {
                 {
                     this.state.redirect && <Redirect to={{
                                                 pathname: '/game',
-                                                state: { id: this.state.id }
+                                                state: {
+                                                    game: this.state.game,
+                                                    player: this.state.player,
+                                                    opponent: this.state.opponent
+                                                }
                                             }}/>
                 }
                 <Grid container justify="center" alignItems="center" direction="row" spacing={4}>

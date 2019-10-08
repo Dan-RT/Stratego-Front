@@ -152,13 +152,12 @@ export default class Game extends React.Component {
     }
 
     initGame() {
-        api.get("http://localhost:8080/game/initialize").then(data => {
-            displayBoard(data.board);
-            this.setState({
-                board : data.board,
-                pieces : data.pieces1,
-                PlayerId:this.props.location.state.id
-            })
+        this.setState({
+            board : this.props.location.state.game.board,
+            player: this.props.location.state.player,
+            opponent: this.props.location.state.opponent,
+            started : false,
+            setup : true
         });
     }
 
@@ -170,7 +169,7 @@ export default class Game extends React.Component {
                         {
                             (this.state.started || this.state.setup) &&
                             <Side
-                                pieces={this.state.pieces}
+                                pieces={this.state.player.pieces}
                                 started={this.state.started}
                                 setup={this.state.setup}
                                 handleTileSelection={this.handleTileSelection}
@@ -190,7 +189,6 @@ export default class Game extends React.Component {
                                 </Grid>
                             </Grid>
                         </Grid>
-
                         {
                             (this.state.started || this.state.setup) &&
                             <Grid item>
@@ -204,7 +202,6 @@ export default class Game extends React.Component {
                                 />
                             </Grid>
                         }
-
                     </Grid>
                 </Grid>
             </Grid>
