@@ -75,3 +75,13 @@ Col {
 .playerContent{
     text-align: center;
 }
+
+.rotateBoard {
+    margin-top: 70vh;
+    transform-origin: center !important;
+    transform: rotate(180deg) !important;
+}
+
+.rotate {
+    transform: rotate(180deg) !important;
+}

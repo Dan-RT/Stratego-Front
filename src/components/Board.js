@@ -29,6 +29,7 @@ export default class Board extends React.Component {
                             return (
                                 <div key={`${keyInner}-${keyOuter}`}>
                                     <Cell
+                                        rotate={this.props.rotate}
                                         isSelected={(this.isSelected(item.coordinate.x, item.coordinate.y))}
                                         value={item}
                                         team={item.team}

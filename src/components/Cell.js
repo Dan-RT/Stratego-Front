@@ -8,7 +8,9 @@ export default class Cell extends React.Component {
     }
 
     render(){
-        let className = "cell" + (!this.props.isSelected ? "" : " selected") + (!this.props.isLake ? "" : " lake") ;
+        let className = "cell" + (!this.props.isSelected ? "" : " selected")
+            + (!this.props.isLake ? "" : " lake")
+                + (!this.props.rotate ? "" : " rotate");
 
         return (
             <div ref="cell" onClick={this.props.onClick} className={className}>

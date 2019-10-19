@@ -19,7 +19,9 @@ export default class Game extends React.Component {
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.handleGameStart = this.handleGameStart.bind(this);
+        this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
+        this.rotate = this.rotate.bind(this);
         this.state = {
             started : false,
             setup: false,
@@ -28,8 +30,15 @@ export default class Game extends React.Component {
             resetSelection: false,
             PlayerId: 0,
             pieces: {},
-            board: {}
+            board: {},
+            rotate: false
         };
+    }
+
+    rotate(){
+        this.setState({
+            rotate: !this.state.rotate,
+        })
     }
 
     handleGameInit() {
@@ -39,6 +48,10 @@ export default class Game extends React.Component {
             setup : true
         });
     };
+
+    handleGameReady() {
+
+    }
 
     handleGameStart() {
         this.pullGame();
@@ -179,7 +192,9 @@ export default class Game extends React.Component {
         return (
             <Grid container spacing={2} direction="row" justify="center">
                 <Grid item xs={3}>
+
                     <div className="side">
+                        <input onClick={this.rotate} type="button" value="right" />
                         {
                             (this.state.started || this.state.setup) &&
                             <Side
@@ -199,21 +214,24 @@ export default class Game extends React.Component {
                                     <Button variant="contained" onClick={this.handleGameInit}>Init</Button>
                                 </Grid>
                                 <Grid item className="game-button">
-                                    <Button variant="contained" color="primary" onClick={this.handleGameStart}>Start</Button>
+                                    <Button variant="contained" color="primary" onClick={this.handleGameReady()}>Ready</Button>
                                 </Grid>
                             </Grid>
                         </Grid>
                         {
                             (this.state.started || this.state.setup) &&
-                            <Grid item>
-                                <Board
-                                    started={this.state.started}
-                                    setup={this.state.setup}
-                                    board={this.state.board}
-                                    queryToBackend={this.queryToBackend}
-                                    handleCellSelection={this.handleCellSelection}
-                                    movePieceOnBoard={this.movePieceOnBoard}
-                                />
+                            <Grid item style={{"max-height": '70vh'}}>
+                                <div className={this.state.rotate && "rotateBoard"}>
+                                    <Board
+                                        rotate={this.state.rotate}
+                                        started={this.state.started}
+                                        setup={this.state.setup}
+                                        board={this.state.board}
+                                        queryToBackend={this.queryToBackend}
+                                        handleCellSelection={this.handleCellSelection}
+                                        movePieceOnBoard={this.movePieceOnBoard}
+                                    />
+                                </div>
                             </Grid>
                         }
                     </Grid>
