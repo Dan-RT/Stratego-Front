@@ -26,7 +26,9 @@ export default class Game extends React.Component {
             tileSelected: {},
             cellSelected: {},
             resetSelection: false,
-            PlayerId: 0
+            PlayerId: 0,
+            pieces: {},
+            board: {}
         };
     }
 
@@ -68,7 +70,6 @@ export default class Game extends React.Component {
 
     handleTileSelection(item, key, reset) {
 
-
         if (reset) {
             this.setState({
                 tileSelected: {}
@@ -81,9 +82,11 @@ export default class Game extends React.Component {
                 }
             });
 
-            //if (this.state.cellSelected.team !== undefined) {
-            if (this.state.cellSelected) {
+            if (this.state.cellSelected.team !== undefined) {
+            //if (this.state.cellSelected) {
+                console.log(this.state.cellSelected);
                 console.log("PLACE PIECE");
+                //debugger;
                 this.placePiece(item, this.state.cellSelected);
             }
         }
@@ -101,16 +104,18 @@ export default class Game extends React.Component {
                 cellSelected: this.state.board[item.coordinate.x][item.coordinate.y]
             });
 
-            //if (this.state.tileSelected.tile.team !== undefined) {
-            if (this.state.tileSelected) {
+            if (this.state.tileSelected !== undefined && this.state.tileSelected.tile !== undefined) {
+            //if (this.state.tileSelected) {
                 console.log("PLACE PIECE");
+                console.log(this.state.tileSelected);
+                //debugger;
                 this.placePiece(this.state.tileSelected, item);
             }
         }
     }
 
     movePieceOnBoard(piece, newCoordinate) {
-        //debugger;
+        ////debugger;
 
         let prevCoordinate = piece.coordinate;
 
@@ -130,9 +135,12 @@ export default class Game extends React.Component {
     }
 
     placePiece (tile, cell) {
+        //debugger;
         if (tile.tile && cell) {
             tile.tile.coordinate = cell.coordinate;
 
+            console.log("this.state.pieces");
+            console.log(this.state.pieces);
             let boardTmp = JSON.parse(JSON.stringify(this.state.board));
             let piecesTmp = JSON.parse(JSON.stringify(this.state.pieces));
 
@@ -140,6 +148,9 @@ export default class Game extends React.Component {
                 boardTmp[cell.coordinate.x][cell.coordinate.y] = tile.tile;
                 piecesTmp.splice(this.state.tileSelected.key, 1);
             }
+
+            console.log("piecesTmp");
+            console.log(piecesTmp);
 
             this.setState({
                 board: boardTmp,
@@ -152,8 +163,11 @@ export default class Game extends React.Component {
     }
 
     initGame() {
+        console.log("this.props.location.state.game");
+        console.log(this.props.location.state.game);
         this.setState({
             board : this.props.location.state.game.board,
+            pieces : this.props.location.state.player.pieces,
             player: this.props.location.state.player,
             opponent: this.props.location.state.opponent,
             started : false,
@@ -169,7 +183,7 @@ export default class Game extends React.Component {
                         {
                             (this.state.started || this.state.setup) &&
                             <Side
-                                pieces={this.state.player.pieces}
+                                pieces={this.state.pieces}
                                 started={this.state.started}
                                 setup={this.state.setup}
                                 handleTileSelection={this.handleTileSelection}

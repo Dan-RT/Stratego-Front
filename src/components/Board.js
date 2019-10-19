@@ -97,6 +97,7 @@ export default class Board extends React.Component {
                 }
             });
 
+
             this.props.handleCellSelection(this.props.board[item_x][item_y], false);
 
             setTimeout(
@@ -108,7 +109,7 @@ export default class Board extends React.Component {
                         }
                     });
                 }.bind(this),
-                1500
+                500
             );
 
         }
