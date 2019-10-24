@@ -235,9 +235,12 @@ export default class Game extends React.Component {
                             <Grid item style={{"max-height": '70vh'}}>
                                 <div className={this.state.rotate && "rotateBoard"}>
                                     <Board
+                                        gameId={this.state.game._id}
                                         rotate={this.state.rotate}
                                         started={this.state.started}
                                         setup={this.state.setup}
+                                        player={this.state.player}
+                                        opponent={this.state.opponent}
                                         board={this.state.game.board}
                                         queryToBackend={this.queryToBackend}
                                         handleCellSelection={this.handleCellSelection}

@@ -182,49 +182,54 @@ export default class Board extends React.Component {
                 return;
             } else if (this.isPiece(previous))  {
                     // if previous is empty
-                    
-                    if (this.isEmpty(current)) {
-                        // if current is a piece
 
-                        let board = this.props.board;
-                        let pieceToMove = this.props.board[this.state.selected.x][this.state.selected.y];
-                        let action = this.props.board[item_x][item_y].coordinate;
+                if (this.isOpponent(previous, current)) {
 
-                        let request = JSON.stringify({board, pieceToMove, action});
-                        this.props.queryToBackend("http://localhost:8080/turn", request).then(() => {
-                            this.setState({
-                                selected : {
-                                    x:-1,
-                                    y:-1
-                                }
-                            });
+                    debugger;
+
+                    let board = this.props.board;
+                    let gameId = this.props.gameId;
+                    let pieceAttacking = previous;
+                    let pieceAttacked = current;
+                    let playerAttacking = this.props.player;
+                    let playerAttacked = this.props.opponent;
+
+                    let request = JSON.stringify({gameId, board, pieceAttacking, pieceAttacked, playerAttacking, playerAttacked});
+
+                    this.props.queryToBackend("http://localhost:8080/attack", request).then(() => {
+                        this.setState({
+                            selected : {
+                                x:-1,
+                                y:-1
+                            }
                         });
+                    });
 
-                        return;
-                    }
-
-                    if (this.isOpponent(previous, current) && this.isOpponent(previous, current)) {
-
-                        let board = this.props.board;
-                        let pieceAttacking = previous;
-                        let pieceAttacked = current;
-
-                        let request = JSON.stringify({board, pieceAttacking, pieceAttacked});
-
-                        this.props.queryToBackend("http://localhost:8080/attack", request).then(() => {
-                            this.setState({
-                                selected : {
-                                    x:-1,
-                                    y:-1
-                                }
-                            });
-                        });
-
-                        return;
-                    }
-
+                    return;
                 }
+
+                if (this.isEmpty(current)) {
+                    // if current is a piece
+
+                    let board = this.props.board;
+                    let pieceToMove = this.props.board[this.state.selected.x][this.state.selected.y];
+                    let action = this.props.board[item_x][item_y].coordinate;
+
+                    let request = JSON.stringify({board, pieceToMove, action});
+                    this.props.queryToBackend("http://localhost:8080/turn", request).then(() => {
+                        this.setState({
+                            selected : {
+                                x:-1,
+                                y:-1
+                            }
+                        });
+                    });
+
+                    return;
+                }
+
             }
+        }
 
         if (this.isPiece(current)) {
             // if current is a piece, select current
