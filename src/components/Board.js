@@ -1,5 +1,12 @@
 import React from 'react';
 import Cell from './Cell';
+import Grid from '@material-ui/core/Grid';
+import '../index.css';
+import Modal from 'react-modal';
+
+import { getImage } from '../image/Images';
+
+Modal.setAppElement(document.getElementById('root'));
 
 export default class Board extends React.Component {
 
@@ -10,12 +17,36 @@ export default class Board extends React.Component {
         this.isOpponent = this.isOpponent.bind(this);
         this.handleCellSelectionStarted = this.handleCellSelectionStarted.bind(this);
         this.handleCellSelectionSetup = this.handleCellSelectionSetup.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+
         this.state = {
             selected : {
                 x:-1,
                 y:-1
-            }
+            },
+            modalIsOpen: false,
+            pieceAttacking: {},
+            pieceAttacked: {}
         };
+    }
+
+    openModal() {
+        this.setState({modalIsOpen: true});
+        setTimeout(
+            function() {
+                this.setState({
+                    modalIsOpen: false,
+                    pieceAttacking: {},
+                    pieceAttacked: {}
+                });
+            }.bind(this),
+            5000
+        );
+    }
+
+    closeModal() {
+        this.setState({modalIsOpen: false});
     }
 
     renderBoard(board) {
@@ -185,10 +216,12 @@ export default class Board extends React.Component {
 
                 if (this.isOpponent(previous, current)) {
 
-                    debugger;
-
                     let board = this.props.board;
                     let gameId = this.props.gameId;
+                    this.setState({
+                        pieceAttacking: previous,
+                        pieceAttacked: current
+                    });
                     let pieceAttacking = previous;
                     let pieceAttacked = current;
                     let playerAttacking = this.props.player;
@@ -204,6 +237,8 @@ export default class Board extends React.Component {
                             }
                         });
                     });
+
+                    this.openModal();
 
                     return;
                 }
@@ -287,10 +322,36 @@ export default class Board extends React.Component {
 
     render() {
         return (
-            <div className="board">
-                {
-                    this.renderBoard(this.props.board)
-                }
+            <div>
+                <div className="board">
+                    {
+                        this.renderBoard(this.props.board)
+                    }
+                </div>
+                <Modal
+                    style={{ position: 'absolute' }}
+                    className="modalCustom"
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal}
+                >
+                    <Grid
+                        container
+                        direction="row"
+                        justify="center"
+                        alignItems="center"
+                        spacing={10}
+                        className={"modalContent"}
+                    >
+                        <Grid item xs={6}>
+                            {getImage(this.state.pieceAttacking, "big")}
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            {getImage(this.state.pieceAttacked, "big")}
+                        </Grid>
+
+                    </Grid>
+                </Modal>
             </div>
         );
     }

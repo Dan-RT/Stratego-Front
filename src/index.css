@@ -19,6 +19,12 @@ body {
     border-radius: 7px;
 }
 
+.PieceImageBig {
+    min-width: 12vw;
+    border: black 2px solid;
+    border-radius: 7px;
+}
+
 .game-button {
   min-height: 50px;
 }
@@ -85,3 +91,16 @@ Col {
 .rotate {
     transform: rotate(180deg) !important;
 }
+
+.modalCustom {
+    min-height: 50vh;
+    max-height: 50vh;
+    min-width: 50vw;
+    max-width: 50vw;
+}
+
+.modalContent {
+    margin-top: 31% !important;
+    margin-left: 55% !important;
+}
+

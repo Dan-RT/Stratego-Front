@@ -14,7 +14,7 @@ export default class Cell extends React.Component {
 
         return (
             <div ref="cell" onClick={this.props.onClick} className={className}>
-                {getImage(this.props.value)}
+                {getImage(this.props.value, "small")}
             </div>
         );
     }

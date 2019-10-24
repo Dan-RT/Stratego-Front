@@ -84,7 +84,7 @@ export function getCorrectImage(item) {
     }
 }
 
-export function getImage(value) {
+export function getImage(value, size) {
 
     let color = "";
 
@@ -99,6 +99,14 @@ export function getImage(value) {
 
     let nameImage = value.type + color;
 
-    return <img src={getCorrectImage(nameImage)} alt={nameImage} className="PieceImage"/>;
+    let style = "";
+
+    if (size === "big") {
+        style = "PieceImageBig"
+    } else {
+        style = "PieceImage"
+    }
+
+    return <img src={getCorrectImage(nameImage)} alt={nameImage} className={style}/>;
 
 }
