@@ -14,11 +14,10 @@ export default class Game extends React.Component {
         super();
         this.handleGameInit = this.handleGameInit.bind(this);
         this.initGame = this.initGame.bind(this);
-        this.pullGame = this.pullGame.bind(this);
+        this.setGame = this.setGame.bind(this);
         this.queryToBackend = this.queryToBackend.bind(this);
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
-        this.handleGameStart = this.handleGameStart.bind(this);
         this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
         this.rotate = this.rotate.bind(this);
@@ -29,8 +28,8 @@ export default class Game extends React.Component {
             cellSelected: {},
             resetSelection: false,
             PlayerId: 0,
-            pieces: {},
-            board: {},
+            player: {},
+            game: {},
             rotate: false
         };
     }
@@ -50,34 +49,38 @@ export default class Game extends React.Component {
     };
 
     handleGameReady() {
+        console.log("handleGameReady");
+        let game = this.state.game;
+        displayBoard(this.state.game.board);
 
-    }
-
-    handleGameStart() {
-        this.pullGame();
+        this.setGame(JSON.stringify(game));
         this.setState({
             started : true,
             setup : false
         });
-    };
+    }
 
-    pullGame() {
-        api.get("http://localhost:8080/game").then(data => {
-            displayBoard(data.board);
-            this.setState({
-                board : data.board,
-                pieces : data.pieces1
-            })
+    setGame(body) {
+        api.post("http://localhost:8080/game/setup", body).then(data => {
+            console.log(data);
+            this.setState(prevState => ({
+                game: {                   // object that we want to update
+                    ...prevState.game,    // keep all other key-value pairs
+                    board : data.board     // update the value of specific key
+                }
+            }))
         });
     }
 
     queryToBackend(path, request) {
         return api.post(path, request).then(data => {
-            displayBoard(data.board);
-            this.setState({
-                board : data.board,
-                pieces : data.pieces1
-            });
+            console.log(data);
+            this.setState(prevState => ({
+                game: {                   // object that we want to update
+                    ...prevState.game,    // keep all other key-value pairs
+                    board : data.board     // update the value of specific key
+                }
+            }))
         });
     }
 
@@ -114,7 +117,7 @@ export default class Game extends React.Component {
         } else {
 
             this.setState({
-                cellSelected: this.state.board[item.coordinate.x][item.coordinate.y]
+                cellSelected: this.state.game.board[item.coordinate.x][item.coordinate.y]
             });
 
             if (this.state.tileSelected !== undefined && this.state.tileSelected.tile !== undefined) {
@@ -136,15 +139,18 @@ export default class Game extends React.Component {
         newPiece.coordinate = newCoordinate;
         let oldPiece = { type:"NONE", coordinate: prevCoordinate };
 
-        let boardTmp = JSON.parse(JSON.stringify(this.state.board));
+        let boardTmp = JSON.parse(JSON.stringify(this.state.game.board));
         boardTmp[newCoordinate.x][newCoordinate.y] = newPiece;
         boardTmp[prevCoordinate.x][prevCoordinate.y] = oldPiece;
 
-        this.setState({
-            board: boardTmp
-        });
+        this.setState(prevState => ({
+            game: {                   // object that we want to update
+                ...prevState.game,    // keep all other key-value pairs
+                board : boardTmp     // update the value of specific key
+            }
+        }));
 
-        displayBoard(this.state.board);
+        displayBoard(this.state.game.board);
     }
 
     placePiece (tile, cell) {
@@ -152,10 +158,10 @@ export default class Game extends React.Component {
         if (tile.tile && cell) {
             tile.tile.coordinate = cell.coordinate;
 
-            console.log("this.state.pieces");
-            console.log(this.state.pieces);
-            let boardTmp = JSON.parse(JSON.stringify(this.state.board));
-            let piecesTmp = JSON.parse(JSON.stringify(this.state.pieces));
+            console.log("this.state.player.pieces");
+            console.log(this.state.player.pieces);
+            let boardTmp = JSON.parse(JSON.stringify(this.state.game.board));
+            let piecesTmp = JSON.parse(JSON.stringify(this.state.player.pieces));
 
             if (boardTmp[cell.coordinate.x][cell.coordinate.y].type === "NONE") {
                 boardTmp[cell.coordinate.x][cell.coordinate.y] = tile.tile;
@@ -165,22 +171,28 @@ export default class Game extends React.Component {
             console.log("piecesTmp");
             console.log(piecesTmp);
 
-            this.setState({
-                board: boardTmp,
-                pieces: piecesTmp,
+            this.setState(prevState => ({
+                game: {                   // object that we want to update
+                    ...prevState.game,    // keep all other key-value pairs
+                    board : boardTmp     // update the value of specific key
+                },
+                player: {
+                    ...prevState.player,
+                    pieces : piecesTmp
+                },
                 tileSelected: {},
                 cellSelected: {}
-            });
+            }));
+
         }
-        displayBoard(this.state.board);
+        displayBoard(this.state.game.board);
     }
 
     initGame() {
         console.log("this.props.location.state.game");
         console.log(this.props.location.state.game);
         this.setState({
-            board : this.props.location.state.game.board,
-            pieces : this.props.location.state.player.pieces,
+            game : this.props.location.state.game,
             player: this.props.location.state.player,
             opponent: this.props.location.state.opponent,
             started : false,
@@ -198,7 +210,7 @@ export default class Game extends React.Component {
                         {
                             (this.state.started || this.state.setup) &&
                             <Side
-                                pieces={this.state.pieces}
+                                pieces={this.state.player.pieces}
                                 started={this.state.started}
                                 setup={this.state.setup}
                                 handleTileSelection={this.handleTileSelection}
@@ -214,7 +226,7 @@ export default class Game extends React.Component {
                                     <Button variant="contained" onClick={this.handleGameInit}>Init</Button>
                                 </Grid>
                                 <Grid item className="game-button">
-                                    <Button variant="contained" color="primary" onClick={this.handleGameReady()}>Ready</Button>
+                                    <Button variant="contained" color="primary" onClick={this.handleGameReady}>Ready</Button>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -226,7 +238,7 @@ export default class Game extends React.Component {
                                         rotate={this.state.rotate}
                                         started={this.state.started}
                                         setup={this.state.setup}
-                                        board={this.state.board}
+                                        board={this.state.game.board}
                                         queryToBackend={this.queryToBackend}
                                         handleCellSelection={this.handleCellSelection}
                                         movePieceOnBoard={this.movePieceOnBoard}
