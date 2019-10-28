@@ -9,7 +9,7 @@ export default class Tile extends React.Component {
 
         return (
             <div ref="cell" onClick={this.props.onClick} className={className}>
-                { getImage(this.props.value, "small") }
+                { getImage(this.props.value, "small", 0) }
             </div>
         );
     }

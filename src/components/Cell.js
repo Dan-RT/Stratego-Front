@@ -7,6 +7,11 @@ export default class Cell extends React.Component {
         super();
     }
 
+    componentDidMount() {
+        console.log("Props cell");
+        console.log(this.props);
+    }
+
     render(){
         let className = "cell" + (!this.props.isSelected ? "" : " selected")
             + (!this.props.isLake ? "" : " lake")
@@ -14,7 +19,7 @@ export default class Cell extends React.Component {
 
         return (
             <div ref="cell" onClick={this.props.onClick} className={className}>
-                {getImage(this.props.value, "small")}
+                {getImage(this.props.value, "small", this.props.playerTeam)}
             </div>
         );
     }

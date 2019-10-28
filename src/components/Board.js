@@ -64,6 +64,7 @@ export default class Board extends React.Component {
                                         isSelected={(this.isSelected(item.coordinate.x, item.coordinate.y))}
                                         value={item}
                                         team={item.team}
+                                        playerTeam={this.props.player.team}
                                         onClick={
                                             () => {
                                                 if(this.props.started && !this.props.setup) {
@@ -343,11 +344,11 @@ export default class Board extends React.Component {
                         className={"modalContent"}
                     >
                         <Grid item xs={6}>
-                            {getImage(this.state.pieceAttacking, "big")}
+                            {getImage(this.state.pieceAttacking, "big", 0)}
                         </Grid>
 
                         <Grid item xs={6}>
-                            {getImage(this.state.pieceAttacked, "big")}
+                            {getImage(this.state.pieceAttacked, "big", 0)}
                         </Grid>
 
                     </Grid>
