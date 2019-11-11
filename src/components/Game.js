@@ -15,7 +15,7 @@ export default class Game extends React.Component {
         this.handleGameInit = this.handleGameInit.bind(this);
         this.initGame = this.initGame.bind(this);
         this.setGame = this.setGame.bind(this);
-        this.queryToBackend = this.queryToBackend.bind(this);
+        this.postToBackend = this.postToBackend.bind(this);
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.handleGameReady = this.handleGameReady.bind(this);
@@ -30,6 +30,7 @@ export default class Game extends React.Component {
             PlayerId: 0,
             player: {},
             game: {},
+            gameId: "",
             rotate: false
         };
     }
@@ -54,10 +55,6 @@ export default class Game extends React.Component {
         displayBoard(this.state.game.board);
 
         this.setGame(JSON.stringify(game));
-        this.setState({
-            started : true,
-            setup : false
-        });
     }
 
     setGame(body) {
@@ -67,12 +64,14 @@ export default class Game extends React.Component {
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
                     board : data.board     // update the value of specific key
-                }
+                },
+                started : true,
+                setup : false
             }))
         });
     }
 
-    queryToBackend(path, request) {
+    postToBackend(path, request) {
         return api.post(path, request).then(data => {
             console.log(data);
             this.setState(prevState => ({
@@ -131,7 +130,7 @@ export default class Game extends React.Component {
     }
 
     movePieceOnBoard(piece, newCoordinate) {
-        ////debugger;
+        //debugger;
 
         let prevCoordinate = piece.coordinate;
 
@@ -193,11 +192,45 @@ export default class Game extends React.Component {
         console.log(this.props.location.state.game);
         this.setState({
             game : this.props.location.state.game,
+            gameId: this.props.location.state.game._id,
             player: this.props.location.state.player,
             opponent: this.props.location.state.opponent,
             started : false,
             setup : true
         });
+    }
+
+    componentDidMount() {
+
+        console.log("componentDidMount");
+        let id = "";
+
+        try {
+            setInterval(async () => {
+                //debugger;
+
+                if (this.state.setup) {
+                    console.log(this.state.game);
+                    console.log(this.state.game._id);
+                    id = this.state.game._id;
+                }
+
+                if (this.state.started) {
+
+                    console.log("componentDidMount / game started");
+                    api.get("http://localhost:8080/game/" + id).then(data => {
+                        this.setState({
+                            game : data
+                        })
+                    });
+                }
+
+            }, 3000);
+
+        } catch(e) {
+            console.log(e);
+        }
+
     }
 
     render() {
@@ -232,7 +265,7 @@ export default class Game extends React.Component {
                         </Grid>
                         {
                             (this.state.started || this.state.setup) &&
-                            <Grid item style={{"max-height": '70vh'}}>
+                            <Grid item style={{"maxHeight": '70vh'}}>
                                 <div className={this.state.rotate && "rotateBoard"}>
                                     <Board
                                         gameId={this.state.game._id}
@@ -242,7 +275,7 @@ export default class Game extends React.Component {
                                         player={this.state.player}
                                         opponent={this.state.opponent}
                                         board={this.state.game.board}
-                                        queryToBackend={this.queryToBackend}
+                                        postToBackend={this.postToBackend}
                                         handleCellSelection={this.handleCellSelection}
                                         movePieceOnBoard={this.movePieceOnBoard}
                                     />

@@ -97,7 +97,7 @@ export function getImage(value, size, playerTeam) {
     } else if (value.team === 2) {
         color = "_B";
     } else {
-        console.log("ERROR ON Cell.getImage");
+        //console.log("ERROR ON Cell.getImage");
         return "";
     }
 

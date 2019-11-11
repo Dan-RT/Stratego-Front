@@ -7,11 +7,6 @@ export default class Cell extends React.Component {
         super();
     }
 
-    componentDidMount() {
-        console.log("Props cell");
-        console.log(this.props);
-    }
-
     render(){
         let className = "cell" + (!this.props.isSelected ? "" : " selected")
             + (!this.props.isLake ? "" : " lake")
