@@ -224,7 +224,6 @@ export default class Board extends React.Component {
 
                 // if previous is empty
                 if (this.isEmpty(current)) {
-                     //console.log("BITEEEUUUUUUUUUUH");
 
                     let gameId = this.props.gameId;
                     let board = this.props.board;
@@ -245,8 +244,7 @@ export default class Board extends React.Component {
                     return;
                 }
 
-
-                if (this.isOpponent(previous, current)) {
+                if (this.isOpponent(current)) {
 
                     let board = this.props.board;
                     let gameId = this.props.gameId;
@@ -298,7 +296,7 @@ export default class Board extends React.Component {
             }
         }
 
-        if (this.isPiece(current)) {
+        if (this.isPiece(current) && !this.isOpponent(current)) {
             // if current is a piece, select current
 
              //console.log(current);
@@ -350,8 +348,8 @@ export default class Board extends React.Component {
         return (item_x === this.state.selected.x && item_y === this.state.selected.y);
     }
 
-    isOpponent(currentPiece, targetedPiece) {
-        return (currentPiece.team !== targetedPiece.team)
+    isOpponent(targetedPiece) {
+        return (this.props.player.team !== targetedPiece.team)
     }
 
     render() {

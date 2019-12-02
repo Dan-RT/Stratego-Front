@@ -250,9 +250,11 @@ export default class Game extends React.Component {
                 <Grid item xs={3}>
 
                     <div className="side">
-                        <input onClick={this.rotate} type="button" value="right" />
+
+                        <input onClick={this.rotate} type="button" value="Rotate" />
                         {
-                            (this.state.started || this.state.setup) &&
+                            //(this.state.started || this.state.setup) &&
+                            (this.state.setup) &&
                             <Side
                                 pieces={this.state.player.pieces}
                                 started={this.state.started}
