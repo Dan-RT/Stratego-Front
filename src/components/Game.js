@@ -21,17 +21,18 @@ export default class Game extends React.Component {
         this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
         this.rotate = this.rotate.bind(this);
+        this.yourTurn = this.yourTurn.bind(this);
         this.state = {
             started : false,
             setup: false,
             tileSelected: {},
             cellSelected: {},
             resetSelection: false,
-            PlayerId: 0,
             player: {},
             game: {},
             gameId: "",
-            rotate: false
+            rotate: false,
+            playingPlayer: 0
         };
     }
 
@@ -50,20 +51,29 @@ export default class Game extends React.Component {
     };
 
     handleGameReady() {
-        console.log("handleGameReady");
+        //console.log("handleGameReady");
         let game = this.state.game;
-        displayBoard(this.state.game.board);
+        //displayBoard(this.state.game.board);
 
         this.setGame(JSON.stringify(game));
+    }
+    
+    yourTurn() {
+        if (this.state.playingPlayer === this.state.player.team) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     setGame(body) {
         api.post("http://localhost:8080/game/setup", body).then(data => {
-            console.log(data);
+             //console.log(data);
             this.setState(prevState => ({
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
-                    board : data.board     // update the value of specific key
+                    board : data.board,   // update the value of specific key
+                    playingPlayer: data.playingPlayer
                 },
                 started : true,
                 setup : false
@@ -73,11 +83,12 @@ export default class Game extends React.Component {
 
     postToBackend(path, request) {
         return api.post(path, request).then(data => {
-            console.log(data);
+             //console.log(data);
             this.setState(prevState => ({
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
-                    board : data.board    // update the value of specific key
+                    board : data.board,   // update the value of specific key
+                    playingPlayer: data.playingPlayer
                 }
             }))
         });
@@ -99,8 +110,8 @@ export default class Game extends React.Component {
 
             if (this.state.cellSelected.team !== undefined) {
             //if (this.state.cellSelected) {
-                console.log(this.state.cellSelected);
-                console.log("PLACE PIECE");
+                 //console.log(this.state.cellSelected);
+                 //console.log("PLACE PIECE");
                 //debugger;
                 this.placePiece(item, this.state.cellSelected);
             }
@@ -121,8 +132,8 @@ export default class Game extends React.Component {
 
             if (this.state.tileSelected !== undefined && this.state.tileSelected.tile !== undefined) {
             //if (this.state.tileSelected) {
-                console.log("PLACE PIECE");
-                console.log(this.state.tileSelected);
+                 //console.log("PLACE PIECE");
+                 //console.log(this.state.tileSelected);
                 //debugger;
                 this.placePiece(this.state.tileSelected, item);
             }
@@ -157,8 +168,8 @@ export default class Game extends React.Component {
         if (tile.tile && cell) {
             tile.tile.coordinate = cell.coordinate;
 
-            console.log("this.state.player.pieces");
-            console.log(this.state.player.pieces);
+             //console.log("this.state.player.pieces");
+             //console.log(this.state.player.pieces);
             let boardTmp = JSON.parse(JSON.stringify(this.state.game.board));
             let piecesTmp = JSON.parse(JSON.stringify(this.state.player.pieces));
 
@@ -167,8 +178,8 @@ export default class Game extends React.Component {
                 piecesTmp.splice(this.state.tileSelected.key, 1);
             }
 
-            console.log("piecesTmp");
-            console.log(piecesTmp);
+             //console.log("piecesTmp");
+             //console.log(piecesTmp);
 
             this.setState(prevState => ({
                 game: {                   // object that we want to update
@@ -186,10 +197,10 @@ export default class Game extends React.Component {
         }
         displayBoard(this.state.game.board);
     }
-
+    
     initGame() {
-        console.log("this.props.location.state.game");
-        console.log(this.props.location.state.game);
+         //console.log("this.props.location.state.game");
+         //console.log(this.props.location.state.game);
         this.setState({
             game : this.props.location.state.game,
             gameId: this.props.location.state.game._id,
@@ -209,18 +220,18 @@ export default class Game extends React.Component {
             setInterval(async () => {
                 //debugger;
 
-                if (this.state.setup) {
-                    console.log(this.state.game);
-                    console.log(this.state.game._id);
-                    id = this.state.game._id;
-                }
+                console.log(this.state.game);
+                console.log(this.state.game._id);
+                id = this.state.game._id;
 
                 if (this.state.started) {
 
                     console.log("componentDidMount / game started");
                     api.get("http://localhost:8080/game/" + id).then(data => {
+                        console.log(data);
                         this.setState({
-                            game : data
+                            game : data,
+                            playingPlayer: data.playingPlayer
                         })
                     });
                 }
@@ -261,6 +272,10 @@ export default class Game extends React.Component {
                                 <Grid item className="game-button">
                                     <Button variant="contained" color="primary" onClick={this.handleGameReady}>Ready</Button>
                                 </Grid>
+                                <Grid item className="playingPlayer">
+                                    { this.yourTurn() && this.state.started && <div>Your Turn</div> }
+                                    { !this.yourTurn() && this.state.started && <div>Not your Turn</div> }
+                                </Grid>
                             </Grid>
                         </Grid>
                         {
@@ -278,6 +293,7 @@ export default class Game extends React.Component {
                                         postToBackend={this.postToBackend}
                                         handleCellSelection={this.handleCellSelection}
                                         movePieceOnBoard={this.movePieceOnBoard}
+                                        yourTurn={this.yourTurn()}
                                     />
                                 </div>
                             </Grid>

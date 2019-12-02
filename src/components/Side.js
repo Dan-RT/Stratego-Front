@@ -17,7 +17,7 @@ export default class Side extends React.Component {
     }
 
     handlePieceSelection(key, item) {
-        console.log("Key: " + key);
+         //console.log("Key: " + key);
 
         if (this.isSelected(key)) {
             this.setState({

@@ -24,7 +24,7 @@ export default class PlayersSection extends React.Component {
     }
 
     pullPlayers() {
-        console.log("pullPlayers");
+         //console.log("pullPlayers");
         api.get("http://localhost:8080/players").then(data => {
             this.setState({
                 players : data
@@ -54,7 +54,7 @@ export default class PlayersSection extends React.Component {
                 }
             }
         }).then(() => {
-            console.log(this.state);
+             //console.log(this.state);
             this.setState({
                 redirect:true
             })

@@ -87,10 +87,10 @@ export default class Board extends React.Component {
 
     handleCellSelectionSetup(item_x, item_y) {
 
-        console.log(item_x);
-        console.log(item_y);
+         //console.log(item_x);
+         //console.log(item_y);
 
-        console.log(this.state.selected);
+         //console.log(this.state.selected);
 
         if (this.isSelected(item_x, item_y)) {
             this.setState({
@@ -186,9 +186,13 @@ export default class Board extends React.Component {
 
     handleCellSelectionStarted(item_x, item_y) {
 
+        if (!this.props.yourTurn) {
+            return;
+        }
+
         let current = this.props.board[item_x][item_y];
-        console.log("Current:");
-        console.log(current);
+         //console.log("Current:");
+         //console.log(current);
 
         if (this.isLake(item_x, item_y)) {
             return;
@@ -200,8 +204,8 @@ export default class Board extends React.Component {
             // if we have a selected piece
 
             previous = this.props.board[this.state.selected.x][this.state.selected.y];
-            console.log("previous:");
-            console.log(previous);
+             //console.log("previous:");
+             //console.log(previous);
 
             //debugger;
 
@@ -220,7 +224,7 @@ export default class Board extends React.Component {
 
                 // if previous is empty
                 if (this.isEmpty(current)) {
-                    console.log("BITEEEUUUUUUUUUUH");
+                     //console.log("BITEEEUUUUUUUUUUH");
 
                     let gameId = this.props.gameId;
                     let board = this.props.board;
@@ -297,7 +301,7 @@ export default class Board extends React.Component {
         if (this.isPiece(current)) {
             // if current is a piece, select current
 
-            console.log(current);
+             //console.log(current);
             this.setState({
                 selected : {
                     x: current.coordinate.x,
@@ -326,19 +330,19 @@ export default class Board extends React.Component {
         if (item.x === -1 || item.y === -1) {
             return false;
         }
-        console.log("isEmpty");
-        console.log(item.type);
+         //console.log("isEmpty");
+         //console.log(item.type);
         return (item.type === "NONE");
     }
 
     isPiece(item) {
-        console.log("isPiece");
-        console.log(item);
+         //console.log("isPiece");
+         //console.log(item);
         if (item.x === -1 || item.y === -1) {
             return false;
         }
-        console.log("isPiece");
-        console.log(item.type);
+         //console.log("isPiece");
+         //console.log(item.type);
         return (item.type !== "NONE" && !item.type !== "LAKE");
     }
 
