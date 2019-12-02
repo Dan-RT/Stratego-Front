@@ -77,7 +77,7 @@ export default class Game extends React.Component {
             this.setState(prevState => ({
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
-                    board : data.board     // update the value of specific key
+                    board : data.board    // update the value of specific key
                 }
             }))
         });

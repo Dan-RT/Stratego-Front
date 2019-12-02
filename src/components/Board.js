@@ -203,8 +203,11 @@ export default class Board extends React.Component {
             console.log("previous:");
             console.log(previous);
 
+            //debugger;
+
             if (this.isSelected(current.coordinate.x, current.coordinate.y)) {
                 // if we click on the same piece, we unselect it
+                //debugger;
                 this.setState({
                     selected : {
                         x:-1,
@@ -213,7 +216,31 @@ export default class Board extends React.Component {
                 });
                 return;
             } else if (this.isPiece(previous))  {
-                    // if previous is empty
+                //debugger;
+
+                // if previous is empty
+                if (this.isEmpty(current)) {
+                    console.log("BITEEEUUUUUUUUUUH");
+
+                    let gameId = this.props.gameId;
+                    let board = this.props.board;
+                    let pieceToMove = this.props.board[this.state.selected.x][this.state.selected.y];
+                    let action = this.props.board[item_x][item_y].coordinate;
+
+                    let request = JSON.stringify({gameId, board, pieceToMove, action});
+
+                    this.props.postToBackend("http://localhost:8080/turn", request).then(() => {
+                        this.setState({
+                            selected : {
+                                x:-1,
+                                y:-1
+                            }
+                        });
+                    });
+
+                    return;
+                }
+
 
                 if (this.isOpponent(previous, current)) {
 
@@ -305,6 +332,8 @@ export default class Board extends React.Component {
     }
 
     isPiece(item) {
+        console.log("isPiece");
+        console.log(item);
         if (item.x === -1 || item.y === -1) {
             return false;
         }
