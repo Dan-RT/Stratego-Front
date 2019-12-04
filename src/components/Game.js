@@ -20,6 +20,7 @@ export default class Game extends React.Component {
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
+        this.determinePlayerIndex = this.determinePlayerIndex.bind(this);
         this.isYourTurn = this.isYourTurn.bind(this);
         this.state = {
             started : false,
@@ -62,6 +63,10 @@ export default class Game extends React.Component {
         }
     }
 
+    determinePlayerIndex(team) {
+        return team-1;
+    }
+    
     setGame(body) {
         api.post("http://localhost:8080/game/setup", body).then(data => {
             console.log(data);
@@ -70,6 +75,7 @@ export default class Game extends React.Component {
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
                     board : data.board,   // update the value of specific key
+                    player: data.players[this.determinePlayerIndex(this.state.player.team)],
                     playingPlayer: data.playingPlayer
                 },
                 started : true,
@@ -85,6 +91,7 @@ export default class Game extends React.Component {
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
                     board : data.board,   // update the value of specific key
+                    player: data.players[this.determinePlayerIndex(this.state.player.team)],
                     playingPlayer: data.playingPlayer
                 }
             }))
@@ -226,11 +233,18 @@ export default class Game extends React.Component {
                     //console.log("componentDidMount / game started");
                     api.get("http://localhost:8080/game/" + id).then(data => {
                         //console.log(data);
-                        this.setState({
-                            game : data,
-                            playingPlayer: data.playingPlayer
-                        })
+                        try{
+                            this.setState({
+                                game : data,
+                                player: data.players[this.determinePlayerIndex(this.state.player.team)],
+                                playingPlayer: data.playingPlayer
+                            })
+                        } catch (e) {
+                            console.log(e)
+                        }
                     });
+
+
                 }
 
             }, 3000);
@@ -249,8 +263,6 @@ export default class Game extends React.Component {
 
                         {/*<input onClick={this.rotate} type="button" value="Rotate" />*/}
                         {
-                            //(this.state.started || this.state.setup) &&
-                            (this.state.setup) &&
                             <Side
                                 pieces={this.state.player.pieces}
                                 started={this.state.started}
