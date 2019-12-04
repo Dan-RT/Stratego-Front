@@ -12,16 +12,15 @@ export default class Game extends React.Component {
 
     constructor () {
         super();
-        this.handleGameInit = this.handleGameInit.bind(this);
         this.initGame = this.initGame.bind(this);
         this.setGame = this.setGame.bind(this);
+        this.handleResetGame = this.handleResetGame.bind(this);
         this.postToBackend = this.postToBackend.bind(this);
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
         this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
-        this.rotate = this.rotate.bind(this);
-        this.yourTurn = this.yourTurn.bind(this);
+        this.isYourTurn = this.isYourTurn.bind(this);
         this.state = {
             started : false,
             setup: false,
@@ -36,29 +35,26 @@ export default class Game extends React.Component {
         };
     }
 
-    rotate(){
-        this.setState({
-            rotate: !this.state.rotate,
-        })
+    handleGameReady() {
+        console.log("handleGameReady");
+        displayBoard(this.state.game.board);
+        this.setGame(JSON.stringify(this.state.game));
     }
 
-    handleGameInit() {
-        this.initGame();
-        this.setState({
-            started : false,
-            setup : true
-        });
-    };
-
-    handleGameReady() {
-        //console.log("handleGameReady");
-        let game = this.state.game;
-        //displayBoard(this.state.game.board);
-
-        this.setGame(JSON.stringify(game));
+    handleResetGame() {
+        if(this.state.setup) {
+            api.get("http://localhost:8080/game/reset/" + this.state.gameId).then(data => {
+                //console.log(data);
+                this.setState({
+                    game : data,
+                    started: false,
+                    setup: true
+                })
+            });
+        }
     }
     
-    yourTurn() {
+    isYourTurn() {
         if (this.state.playingPlayer === this.state.player.team) {
             return true;
         } else {
@@ -68,7 +64,8 @@ export default class Game extends React.Component {
 
     setGame(body) {
         api.post("http://localhost:8080/game/setup", body).then(data => {
-             //console.log(data);
+            console.log(data);
+            displayBoard(data.board);
             this.setState(prevState => ({
                 game: {                   // object that we want to update
                     ...prevState.game,    // keep all other key-value pairs
@@ -160,7 +157,7 @@ export default class Game extends React.Component {
             }
         }));
 
-        displayBoard(this.state.game.board);
+        //displayBoard(this.state.game.board);
     }
 
     placePiece (tile, cell) {
@@ -195,40 +192,40 @@ export default class Game extends React.Component {
             }));
 
         }
-        displayBoard(this.state.game.board);
+        //displayBoard(this.state.game.board);
     }
     
     initGame() {
-         //console.log("this.props.location.state.game");
-         //console.log(this.props.location.state.game);
         this.setState({
             game : this.props.location.state.game,
             gameId: this.props.location.state.game._id,
             player: this.props.location.state.player,
             opponent: this.props.location.state.opponent,
             started : false,
-            setup : true
+            setup : true,
+            rotate: (this.props.location.state.player.team === 2)
         });
     }
 
     componentDidMount() {
 
-        console.log("componentDidMount");
+        this.initGame();
+        //console.log("componentDidMount");
         let id = "";
 
         try {
             setInterval(async () => {
-                //debugger;
-
-                console.log(this.state.game);
-                console.log(this.state.game._id);
+                //console.log("State");
+                //console.log(this.state);
+                //console.log(this.state.game);
+                //console.log(this.state.game._id);
                 id = this.state.game._id;
 
                 if (this.state.started) {
 
-                    console.log("componentDidMount / game started");
+                    //console.log("componentDidMount / game started");
                     api.get("http://localhost:8080/game/" + id).then(data => {
-                        console.log(data);
+                        //console.log(data);
                         this.setState({
                             game : data,
                             playingPlayer: data.playingPlayer
@@ -239,9 +236,8 @@ export default class Game extends React.Component {
             }, 3000);
 
         } catch(e) {
-            console.log(e);
+            //console.log(e);
         }
-
     }
 
     render() {
@@ -251,7 +247,7 @@ export default class Game extends React.Component {
 
                     <div className="side">
 
-                        <input onClick={this.rotate} type="button" value="Rotate" />
+                        {/*<input onClick={this.rotate} type="button" value="Rotate" />*/}
                         {
                             //(this.state.started || this.state.setup) &&
                             (this.state.setup) &&
@@ -269,14 +265,17 @@ export default class Game extends React.Component {
                         <Grid item>
                             <Grid container direction="row" spacing={2}>
                                 <Grid item className="game-button">
-                                    <Button variant="contained" onClick={this.handleGameInit}>Init</Button>
+                                    <Button variant="contained" onClick={this.handleResetGame}>Reset</Button>
                                 </Grid>
-                                <Grid item className="game-button">
-                                    <Button variant="contained" color="primary" onClick={this.handleGameReady}>Ready</Button>
-                                </Grid>
+                                {
+                                    this.state.setup &&
+                                    <Grid item className="game-button">
+                                        <Button variant="contained" color="primary" onClick={this.handleGameReady}>Ready</Button>
+                                    </Grid>
+                                }
                                 <Grid item className="playingPlayer">
-                                    { this.yourTurn() && this.state.started && <div>Your Turn</div> }
-                                    { !this.yourTurn() && this.state.started && <div>Not your Turn</div> }
+                                    { this.isYourTurn() && this.state.started && <div>Your Turn</div> }
+                                    { !this.isYourTurn() && this.state.started && <div>Not your Turn</div> }
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -295,7 +294,7 @@ export default class Game extends React.Component {
                                         postToBackend={this.postToBackend}
                                         handleCellSelection={this.handleCellSelection}
                                         movePieceOnBoard={this.movePieceOnBoard}
-                                        yourTurn={this.yourTurn()}
+                                        isYourTurn={this.isYourTurn()}
                                     />
                                 </div>
                             </Grid>

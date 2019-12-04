@@ -3,9 +3,7 @@ import api from "../utils/api";
 import Player from './Player';
 import Grid from '@material-ui/core/Grid';
 import {
-    Route,
-    Redirect,
-    withRouter
+    Redirect
 } from "react-router-dom";
 
 export default class PlayersSection extends React.Component {

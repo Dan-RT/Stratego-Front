@@ -186,7 +186,7 @@ export default class Board extends React.Component {
 
     handleCellSelectionStarted(item_x, item_y) {
 
-        if (!this.props.yourTurn) {
+        if (!this.props.isYourTurn) {
             return;
         }
 
