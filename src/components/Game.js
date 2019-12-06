@@ -44,7 +44,7 @@ export default class Game extends React.Component {
 
     handleResetGame() {
         if(this.state.setup) {
-            api.get("http://localhost:8080/game/reset/" + this.state.gameId).then(data => {
+            api.get("/game/reset/" + this.state.gameId).then(data => {
                 //console.log(data);
                 this.setState({
                     game : data,
@@ -68,7 +68,7 @@ export default class Game extends React.Component {
     }
     
     setGame(body) {
-        api.post("http://localhost:8080/game/setup", body).then(data => {
+        api.post("/game/setup", body).then(data => {
             console.log(data);
             displayBoard(data.board);
             this.setState(prevState => ({
@@ -231,7 +231,7 @@ export default class Game extends React.Component {
                 if (this.state.started) {
 
                     //console.log("componentDidMount / game started");
-                    api.get("http://localhost:8080/game/" + id).then(data => {
+                    api.get("/game/" + id).then(data => {
                         //console.log(data);
                         try{
                             this.setState({

@@ -1,9 +1,10 @@
 
+const server = "http://localhost:8080"
 
 const api = {
     get(path) {
         console.log("GET request to " + path);
-        return fetch(path).then((resp) => {
+        return fetch(server+path).then((resp) => {
             if (resp.status === 200) {
                 return resp.json();
             }
@@ -15,7 +16,7 @@ const api = {
     put(path, body) {
         console.log("PUT request to " + path);
         //console.log(JSON.stringify(body));
-        return fetch(path, {
+        return fetch(server+path, {
             method: 'PUT',
             body: JSON.stringify(body),
             headers: {
@@ -27,7 +28,7 @@ const api = {
     post(path, body){
         console.log("POST request to " + path);
         //console.log(body);
-        return fetch(path, {
+        return fetch(server+path, {
             method: 'POST',
             body : body,
             headers: {

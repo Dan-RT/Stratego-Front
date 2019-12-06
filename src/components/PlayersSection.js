@@ -23,7 +23,7 @@ export default class PlayersSection extends React.Component {
 
     pullPlayers() {
          //console.log("pullPlayers");
-        api.get("http://localhost:8080/players").then(data => {
+        api.get("/players").then(data => {
             this.setState({
                 players : data
             })
@@ -35,7 +35,7 @@ export default class PlayersSection extends React.Component {
     }
 
     choosePlayer(id) {
-        api.get("http://localhost:8080/player/opponent/" + id).then(data => {
+        api.get("/player/opponent/" + id).then(data => {
 
             this.setState({
                 game:data

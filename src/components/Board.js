@@ -232,7 +232,7 @@ export default class Board extends React.Component {
 
                     let request = JSON.stringify({gameId, board, pieceToMove, action});
 
-                    this.props.postToBackend("http://localhost:8080/turn", request).then(() => {
+                    this.props.postToBackend("/turn", request).then(() => {
                         this.setState({
                             selected : {
                                 x:-1,
@@ -259,7 +259,7 @@ export default class Board extends React.Component {
 
                     let request = JSON.stringify({gameId, board, pieceAttacking, pieceAttacked, playerAttacking, playerAttacked});
 
-                    this.props.postToBackend("http://localhost:8080/attack", request).then(() => {
+                    this.props.postToBackend("/attack", request).then(() => {
                         this.setState({
                             selected : {
                                 x:-1,
@@ -281,7 +281,7 @@ export default class Board extends React.Component {
                     let action = this.props.board[item_x][item_y].coordinate;
 
                     let request = JSON.stringify({board, pieceToMove, action});
-                    this.props.postToBackend("http://localhost:8080/turn", request).then(() => {
+                    this.props.postToBackend("/turn", request).then(() => {
                         this.setState({
                             selected : {
                                 x:-1,
