@@ -21,12 +21,14 @@ export default class Game extends React.Component {
         this.handleGameReady = this.handleGameReady.bind(this);
         this.movePieceOnBoard = this.movePieceOnBoard.bind(this);
         this.determinePlayerIndex = this.determinePlayerIndex.bind(this);
+        this.determineOpponentIndex = this.determineOpponentIndex.bind(this);
         this.isYourTurn = this.isYourTurn.bind(this);
         this.state = {
             started : false,
             setup: false,
             tileSelected: {},
             cellSelected: {},
+            opponent:{},
             resetSelection: false,
             player: {},
             game: {},
@@ -64,7 +66,19 @@ export default class Game extends React.Component {
     }
 
     determinePlayerIndex(team) {
-        return team-1;
+        if (team === 1) {
+            return 0;
+        } else if (team === 2) {
+            return 1;
+        }
+    }
+
+    determineOpponentIndex(team) {
+        if (team === 1) {
+            return 1;
+        } else if (team === 2) {
+            return 0;
+        }
     }
     
     setGame(body) {
@@ -76,6 +90,7 @@ export default class Game extends React.Component {
                     ...prevState.game,    // keep all other key-value pairs
                     board : data.board,   // update the value of specific key
                     player: data.players[this.determinePlayerIndex(this.state.player.team)],
+                    opponent: data.players[this.determineOpponentIndex(this.state.player.team)],
                     playingPlayer: data.playingPlayer
                 },
                 started : true,
@@ -92,6 +107,7 @@ export default class Game extends React.Component {
                     ...prevState.game,    // keep all other key-value pairs
                     board : data.board,   // update the value of specific key
                     player: data.players[this.determinePlayerIndex(this.state.player.team)],
+                    opponent: data.players[this.determineOpponentIndex(this.state.player.team)],
                     playingPlayer: data.playingPlayer
                 }
             }))
@@ -237,6 +253,7 @@ export default class Game extends React.Component {
                             this.setState({
                                 game : data,
                                 player: data.players[this.determinePlayerIndex(this.state.player.team)],
+                                opponent: data.players[this.determineOpponentIndex(this.state.player.team)],
                                 playingPlayer: data.playingPlayer
                             })
                         } catch (e) {
@@ -256,12 +273,9 @@ export default class Game extends React.Component {
 
     render() {
         return (
-            <Grid container spacing={2} direction="row" justify="center">
+            <Grid container spacing={1} direction="row" justify="center">
                 <Grid item xs={3}>
-
                     <div className="side">
-
-                        {/*<input onClick={this.rotate} type="button" value="Rotate" />*/}
                         {
                             <Side
                                 pieces={this.state.player.pieces}
@@ -312,6 +326,18 @@ export default class Game extends React.Component {
                             </Grid>
                         }
                     </Grid>
+                </Grid>
+                <Grid item xs={2}>
+                    <div className="side">
+                        {
+                            <Side
+                                pieces={this.state.opponent.pieces}
+                                started={true}
+                                setup={false}
+                                handleTileSelection={this.handleTileSelection}
+                            />
+                        }
+                    </div>
                 </Grid>
             </Grid>
 
