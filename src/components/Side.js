@@ -78,7 +78,7 @@ export default class Side extends React.Component {
 
     render() {
         return (
-            <div className="side">
+            <div>
                 {
                     this.renderTiles(this.props.pieces)
                 }

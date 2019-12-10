@@ -6,7 +6,7 @@ import {
     Redirect
 } from "react-router-dom";
 import Button from '@material-ui/core/Button';
-import {getCorrectImage} from "../image/Images";
+import STRATEGO_TITLE from "../image/stratego.jpg";
 
 export default class HomePage extends React.Component {
 
@@ -26,28 +26,31 @@ export default class HomePage extends React.Component {
 
     render() {
         return (
-            <Grid container spacing={2} direction="row" justify="center">
-                <Grid item xs={5}>
-                    {
-                        this.state.redirect && <Redirect to={{
-                            pathname: '/Players'
-                        }}
-                        />
-                    }
-                    {
-                        !this.state.redirect &&
+            <div>
+                {
+                    this.state.redirect && <Redirect to={{
+                        pathname: '/Players'
+                    }}
+                    />
+                }
+                {
+                    !this.state.redirect &&
+                    <Grid container spacing={2} direction="row" justify="center" className={"home-container"}>
                         <div>
-                            <img src={"../image/stratego-guys"} alt={"stratego-guys"}/>
-                            <div>HOME</div>
+                            <hr />
+                            <Grid item xs={5}>
+                                <img className={"stratego-title"} src={STRATEGO_TITLE} alt={"stratego-guys"}/>
+                            </Grid>
+
                             <Grid item className="game-button">
                                 <Button variant="contained" color="primary" onClick={this.handleStartAGame}>Start A Game</Button>
                             </Grid>
+                            <hr />
                         </div>
+                    </Grid>
+                }
 
-                    }
-                </Grid>
-            </Grid>
-
+            </div>
         );
     }
 }

@@ -327,7 +327,7 @@ export default class Game extends React.Component {
                         }
                     </Grid>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <div className="side">
                         {
                             <Side

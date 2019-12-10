@@ -13,10 +13,10 @@ body {
     min-width: 470px;
 }
 
-.PieceImage {
-    max-width: 3vw;
-    border: black 2px solid;
-    border-radius: 7px;
+.grass {
+    max-width: 3.7vw;
+    border: black 1px solid;
+    border-radius: 2px;
 }
 
 .PieceImageBig {
@@ -25,44 +25,82 @@ body {
     border-radius: 7px;
 }
 
+.home-container{
+    margin-top: 8vh !important;
+}
+
 .game-button {
-  min-height: 50px;
+    margin-top: 5vh !important;
+    margin-bottom: 5vh !important;
+    text-align: center;
+}
+
+.stratego-title {
+    margin-top: 5vh !important;
+    max-width: 50vw;
+    border-radius: 3px;
 }
 
 .side {
-    margin-top: 7.45vh;
-    max-width: 180px;
-    min-width: 180px;
+    margin-top: 24.45vh;
+    max-width: 20vw;
+    min-width: 20vw;
 }
 
 .cell {
-    background: #7b7b7b;
-    border: 1px solid #fff;
     float: left;
-    line-height: 45px;
+    height: 45px;
+    width: 45px;
+    cursor: pointer;
+}
+
+
+.selected {
+    background: #fc543c !important;
+}
+
+
+.cell:focus {
+  outline: none;
+}
+
+
+.cellPiece {
+    background: #838229;
+    border: 1px solid black;
+    float: left;
+    line-height: 42px;
     height: 45px;
     text-align: center;
     width: 45px;
     cursor: pointer;
-    border-radius: 5px;
     color: #fff;
     font-weight: 600;
+}
 
-    &:focus {
-      outline: none;
-    }
-  }
+.tile {
+    background: gray;
+    border: 1px solid black;
+    float: left;
+    line-height: 42px;
+    border-radius: 7px;
+    height: 45px;
+    text-align: center;
+    width: 45px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    margin: 0.13vw;
+}
 
-  .selected {
-    background: #fc543c;
-  }
+.PieceImage {
+    max-width: 3.1vw;
+    /*border: black 1px solid;*/
+    border-radius: 5px;
+}
 
-    .lake {
-        background: dodgerblue;
-    }
-
-.cell:focus {
-  outline: none;
+.lake {
+    background: dodgerblue;
 }
 
 .is-flag,
@@ -102,5 +140,9 @@ Col {
 .modalContent {
     margin-top: 31% !important;
     margin-left: 55% !important;
+}
+
+.player-section {
+    margin-top: 35vh !important;
 }
 

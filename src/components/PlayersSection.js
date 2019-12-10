@@ -63,7 +63,8 @@ export default class PlayersSection extends React.Component {
 
         return (
 
-            <div>
+
+            <div className={"player-section"}>
                 {
                     this.state.redirect && <Redirect to={{
                                                 pathname: '/game',

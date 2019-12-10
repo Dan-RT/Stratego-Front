@@ -27,6 +27,7 @@ import MARSHAL_R from "../image/ROUGE/10_rouge.jpg";
 import BOMB_R from "../image/ROUGE/bombe_rouge.jpg";
 import FLAG_R from "../image/ROUGE/drapeau_rouge.jpg";
 import HIDDEN_R from "../image/ROUGE/hidden_rouge.jpg";
+import GRASS from "../image/grass.jpg";
 
 export function getCorrectImage(item) {
     switch (item) {
@@ -84,6 +85,8 @@ export function getCorrectImage(item) {
             return FLAG_B;
         case "HIDDEN_B":
             return HIDDEN_B;
+        case "GRASS":
+            return GRASS;
         default:
             return "";
     }
@@ -92,29 +95,37 @@ export function getCorrectImage(item) {
 export function getImage(value, size, playerTeam) {
 
     let color = "";
-    if (value.team === 1) {
-        color = "_R";
-    } else if (value.team === 2) {
-        color = "_B";
-    } else {
-        //console.log("ERROR ON Cell.getImage");
-        return "";
-    }
-
     let nameImage = "";
-    if (playerTeam !== value.team && size !== "big" && playerTeam !== 0) {
-        nameImage = "HIDDEN" + color;
-    } else {
-        nameImage = value.type + color;
-    }
-
     let style = "";
 
-    if (size === "big") {
-        style = "PieceImageBig"
+    if (value.type === "NONE") {
+        nameImage = "GRASS";
+        style = "grass";
+    } else if (value.type === "LAKE") {
+        return "";
     } else {
-        style = "PieceImage"
+
+        if (value.team === 1) {
+            color = "_R";
+        } else if (value.team === 2) {
+            color = "_B";
+        }
+
+        if (playerTeam !== value.team && size !== "big" && playerTeam !== 0) {
+            nameImage = "HIDDEN" + color;
+        } else {
+            nameImage = value.type + color;
+        }
+
+        if (size === "big") {
+            style = "PieceImageBig"
+        } else {
+            style = "PieceImage"
+        }
     }
+
+
+    console.log(nameImage);
 
     return <img src={getCorrectImage(nameImage)} alt={nameImage} className={style}/>;
 

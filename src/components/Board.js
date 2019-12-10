@@ -74,7 +74,6 @@ export default class Board extends React.Component {
                                                 }
                                             }
                                         }
-                                        isLake={(item.type === "LAKE")}
                                     />
                                 </div>
                             );
