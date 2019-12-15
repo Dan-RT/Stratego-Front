@@ -124,9 +124,6 @@ export function getImage(value, size, playerTeam) {
         }
     }
 
-
-    console.log(nameImage);
-
     return <img src={getCorrectImage(nameImage)} alt={nameImage} className={style}/>;
 
 }

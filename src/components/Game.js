@@ -15,6 +15,7 @@ export default class Game extends React.Component {
         this.initGame = this.initGame.bind(this);
         this.setGame = this.setGame.bind(this);
         this.handleResetGame = this.handleResetGame.bind(this);
+        this.handleResetLayout = this.handleResetLayout.bind(this);
         this.postToBackend = this.postToBackend.bind(this);
         this.handleTileSelection = this.handleTileSelection.bind(this);
         this.handleCellSelection = this.handleCellSelection.bind(this);
@@ -45,14 +46,36 @@ export default class Game extends React.Component {
     }
 
     handleResetGame() {
+        api.get("/game/reset/" + this.state.gameId).then(data => {
+            this.setState(prevState => ({
+                game: {                   // object that we want to update
+                    ...prevState.game,    // keep all other key-value pairs
+                    board : data.board
+                },
+                player: data.players[this.determinePlayerIndex(this.state.player.team)],
+                opponent: data.players[this.determineOpponentIndex(this.state.player.team)],
+                started: false,
+                setup: true
+            }))
+        });
+    }
+
+    handleResetLayout() {
         if(this.state.setup) {
-            api.get("/game/reset/" + this.state.gameId).then(data => {
-                //console.log(data);
-                this.setState({
-                    game : data,
+            api.get("/game/pieces/reset/team/" + this.state.player.team).then(data => {
+                console.log(data);
+                this.setState(prevState => ({
+                    game: {                   // object that we want to update
+                        ...prevState.game,    // keep all other key-value pairs
+                        board : data.board
+                    },
+                    player: {
+                        ...prevState.player,
+                        pieces: data.pieces
+                    },
                     started: false,
                     setup: true
-                })
+                }))
             });
         }
     }
@@ -136,6 +159,10 @@ export default class Game extends React.Component {
                 this.placePiece(item, this.state.cellSelected);
             }
         }
+    }
+
+    disable() {
+
     }
 
     handleCellSelection(item, reset) {
@@ -278,6 +305,7 @@ export default class Game extends React.Component {
                     <div className="side">
                         {
                             <Side
+                                opponent={false}
                                 pieces={this.state.player.pieces}
                                 started={this.state.started}
                                 setup={this.state.setup}
@@ -291,17 +319,23 @@ export default class Game extends React.Component {
                         <Grid item>
                             <Grid container direction="row" spacing={2}>
                                 <Grid item className="game-button">
-                                    <Button variant="contained" onClick={this.handleResetGame}>Reset</Button>
+                                    <Button variant="contained" onClick={this.handleResetGame}>Reset Game</Button>
                                 </Grid>
+                                {
+                                    this.state.setup &&
+                                    <Grid item className="game-button">
+                                        <Button variant="contained" onClick={this.handleResetLayout}>Reset Your Layout</Button>
+                                    </Grid>
+                                }
                                 {
                                     this.state.setup &&
                                     <Grid item className="game-button">
                                         <Button variant="contained" color="primary" onClick={this.handleGameReady}>Ready</Button>
                                     </Grid>
                                 }
-                                <Grid item className="playingPlayer">
-                                    { this.isYourTurn() && this.state.started && <div>Your Turn</div> }
-                                    { !this.isYourTurn() && this.state.started && <div>Not your Turn</div> }
+                                <Grid item>
+                                    { this.isYourTurn() && this.state.started && <div className="playing-player">Your Turn</div> }
+                                    { !this.isYourTurn() && this.state.started && <div className="playing-player">Not your Turn</div> }
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -331,6 +365,7 @@ export default class Game extends React.Component {
                     <div className="side">
                         {
                             <Side
+                                opponent={true}
                                 pieces={this.state.opponent.pieces}
                                 started={true}
                                 setup={false}

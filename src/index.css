@@ -35,6 +35,11 @@ body {
     text-align: center;
 }
 
+.playing-player{
+    margin-top: 6vh !important;
+    text-align: center;
+}
+
 .stratego-title {
     margin-top: 5vh !important;
     max-width: 50vw;

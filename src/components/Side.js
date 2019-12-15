@@ -17,37 +17,37 @@ export default class Side extends React.Component {
     }
 
     handlePieceSelection(key, item) {
-         //console.log("Key: " + key);
+        if (!this.props.opponent) {
+            if (this.isSelected(key)) {
+                this.setState({
+                    selected : {
+                        value : -1,
+                        piece : 0
+                    }
+                });
+                this.props.handleTileSelection(item, key, true);
+            } else {
+                this.setState({
+                    selected : {
+                        value : key,
+                        piece : item
+                    }
+                });
 
-        if (this.isSelected(key)) {
-            this.setState({
-                selected : {
-                    value : -1,
-                    piece : 0
-                }
-            });
-            this.props.handleTileSelection(item, key, true);
-        } else {
-            this.setState({
-                selected : {
-                    value : key,
-                    piece : item
-                }
-            });
+                this.props.handleTileSelection(item, key, false);
 
-            this.props.handleTileSelection(item, key, false);
-
-            setTimeout(
-                function() {
-                    this.setState({
-                        selected : {
-                            value : -1,
-                            piece : 0
-                        }
-                    });
-                }.bind(this),
-                2500
-            );
+                setTimeout(
+                    function() {
+                        this.setState({
+                            selected : {
+                                value : -1,
+                                piece : 0
+                            }
+                        });
+                    }.bind(this),
+                    2500
+                );
+            }
         }
     }
 
