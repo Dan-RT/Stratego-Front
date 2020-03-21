@@ -38,6 +38,7 @@ export default class HomePage extends React.Component {
                     <Grid container spacing={2} direction="row" justify="center" className={"home-container"}>
                         <div>
                             <hr />
+
                             <Grid item xs={5}>
                                 <img className={"stratego-title"} src={STRATEGO_TITLE} alt={"stratego-guys"}/>
                             </Grid>
